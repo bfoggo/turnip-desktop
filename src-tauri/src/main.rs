@@ -8,8 +8,12 @@ use prisma::{campaign, PrismaClient};
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![say_hello])
-        .invoke_handler(tauri::generate_handler![list_campaigns])
+        .invoke_handler(tauri::generate_handler![
+            say_hello,
+            list_campaigns,
+            add_campaign,
+            delete_campaign
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -36,4 +40,32 @@ async fn list_campaigns() -> Result<Vec<String>, QueryError> {
         .map(|campaign| campaign.name)
         .collect();
     Ok(campaign_names)
+}
+
+#[tauri::command]
+async fn add_campaign(campaign_name: String) -> Result<(), QueryError> {
+    let client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+    client
+        .campaign()
+        .create(campaign_name, vec![])
+        .exec()
+        .await?;
+    Ok(())
+}
+
+#[tauri::command]
+async fn delete_campaign(campaign_name: String) -> Result<(), QueryError> {
+    let client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+    client
+        .campaign()
+        .delete(campaign::UniqueWhereParam::NameEquals(campaign_name))
+        .exec()
+        .await?;
+    Ok(())
 }
