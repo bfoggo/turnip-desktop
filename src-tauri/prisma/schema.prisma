@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider     = "sqlite"
+  url          = "file:dev.sqlite"
+  relationMode = "prisma"
+}
+
+generator client {
+  provider = "cargo prisma"
+  output   = "../src/prisma.rs"
+}
+
+model Campaign {
+  id               Int      @id @default(autoincrement())
+  name             String   @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  playerCharacters PC[]
+  npcs             NPC[]
+}
+
+model CharacterType {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  PC        PC[]
+}
+
+model PC {
+  id              Int           @id @default(autoincrement())
+  name            String
+  campaignId      Int
+  characterTypeId Int
+  initiative      Int?
+  isActive        Boolean
+  turnAvailable   Boolean
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  campaign        Campaign      @relation(fields: [campaignId], references: [id])
+  characterType   CharacterType @relation(fields: [characterTypeId], references: [id])
+
+  @@unique([name, campaignId])
+  @@index([campaignId], name: "PC_CampaignId")
+  @@index([characterTypeId], name: "PC_CharacterTypeId")
+}
+
+model NPC {
+  id            Int      @id @default(autoincrement())
+  name          String
+  campaignId    Int
+  initiative    Int?
+  isActive      Boolean
+  turnAvailable Boolean
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  campaign      Campaign @relation(fields: [campaignId], references: [id])
+
+  @@unique([name, campaignId])
+  @@index([campaignId], name: "NPC_CampaignId")
+}
