@@ -3,7 +3,8 @@ import { Inter } from 'next/font/google'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { TrashIcon } from '@heroicons/react/24/solid'
+import { TrashIcon, PlusIcon } from '@heroicons/react/24/solid'
+import Link from 'next/link'
 
 
 // 362A48 (black)
@@ -59,30 +60,39 @@ export default function Home() {
 
   return (
     <main
-      className={`flex min-h-screen flex-col justify-between p-24 ${inter.className}`}
+      className={`flex min-h-screen p-24 ${inter.className}`}
     >
-      <li className="flex flex-col">
-        {campaign_names.map((name) => (
-          <div className="flex flex-row justify-start space-x-2 items-center">
-            <text className="text-[#362A48] text-lg font-bold font-serif"
-            > {name} </text>
+      <div className="flex flex-col justify-start">
+        <li className="flex flex-col">
+          {campaign_names.map((name) => (
+            <div className="flex flex-row space-x-2">
+              <Link className="text-[#362A48] text-lg font-bold font-serif border-2 border-[#7170A5] rounded-md px-2" href={{
+                pathname: '/characters/[name]', query: {
+                  name: name
+                }
+              }}
+              > {name} </Link>
+              <button
+                onClick={() => handle_delete(name)}>
+                <TrashIcon className="h-5 w-5 text-[#905468]" />
+              </button>
+            </div>
+          ))}
+          <div className='flex flex-row justify-start space-x-2 items-center'>
+            <input
+              className="border-2 border-black rounded-md  text-slate-800"
+              type="text"
+              value={new_campaign_name}
+              onChange={(e) => setNewCampaignName(e.target.value)}
+            />
             <button
-              onClick={() => handle_delete(name)}>
-              <TrashIcon className="h-5 w-5 text-[#905468]" />
+              onClick={() => handle_add(new_campaign_name)}>
+              <PlusIcon className="h-5 w-5 text-[#905468]" />
             </button>
           </div>
-        ))}
-      </li>
-      <input
-        className="border-2 border-black rounded-md bg-slate-200 text-slate-800"
-        type="text"
-        value={new_campaign_name}
-        onChange={(e) => setNewCampaignName(e.target.value)}
-      />
-      <button className="border-2 border-black rounded-md bg-slate-400"
-        onClick={() => handle_add(new_campaign_name)}>
-        Add Campaign
-      </button>
+        </li>
+      </div >
+
 
 
     </main >
