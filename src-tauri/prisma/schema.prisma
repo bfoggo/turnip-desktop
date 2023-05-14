@@ -13,23 +13,22 @@ generator client {
 }
 
 model Campaign {
-  id               Int      @id @default(autoincrement())
-  name             String   @unique
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  playerCharacters PC[]
-  npcs             NPC[]
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  characters Character[]
 }
 
 model CharacterType {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  PC        PC[]
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  Character Character[]
 }
 
-model PC {
+model Character {
   id              Int           @id @default(autoincrement())
   name            String
   campaignId      Int
@@ -43,21 +42,6 @@ model PC {
   characterType   CharacterType @relation(fields: [characterTypeId], references: [id])
 
   @@unique([name, campaignId])
-  @@index([campaignId], name: "PC_CampaignId")
-  @@index([characterTypeId], name: "PC_CharacterTypeId")
-}
-
-model NPC {
-  id            Int      @id @default(autoincrement())
-  name          String
-  campaignId    Int
-  initiative    Int?
-  isActive      Boolean
-  turnAvailable Boolean
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  campaign      Campaign @relation(fields: [campaignId], references: [id])
-
-  @@unique([name, campaignId])
-  @@index([campaignId], name: "NPC_CampaignId")
+  @@index([campaignId], name: "Character_CampaignId")
+  @@index([characterTypeId], name: "Character_CharacterTypeId")
 }
