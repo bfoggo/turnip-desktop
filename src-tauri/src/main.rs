@@ -11,38 +11,70 @@ use prisma::{campaign, character, character_type, PrismaClient};
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            say_hello,
+            upsert_character_type_enum,
             list_campaigns,
             add_campaign,
             delete_campaign,
-            list_players
+            list_players,
+            add_player,
+            delete_character,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
-#[tauri::command]
-fn say_hello() -> String {
-    "Hello World!".to_string()
+#[derive(Debug, Clone)]
+enum CharacterType {
+    Player,
+    NPC,
 }
 
 #[tauri::command]
-async fn list_campaigns() -> Result<Vec<String>, QueryError> {
+async fn upsert_character_type_enum() -> Result<(), QueryError> {
     let client = PrismaClient::_builder()
         .build()
         .await
         .expect("Failed to construct Prisma Client.");
-    let campaigns = client
-        .campaign()
-        .find_many(vec![])
-        .select(campaign::select!({ name }))
+    client.character_type().delete_many(vec![]).exec().await?;
+    client
+        .character_type()
+        .upsert(
+            character_type::UniqueWhereParam::IdEquals(CharacterType::Player as i32),
+            character_type::create(
+                String::from("Player"),
+                vec![character_type::SetParam::SetId(
+                    CharacterType::Player as i32,
+                )],
+            ),
+            vec![character_type::SetParam::SetName(String::from("Player"))],
+        )
         .exec()
         .await?;
-    let campaign_names = campaigns
-        .into_iter()
-        .map(|campaign| campaign.name)
-        .collect();
-    Ok(campaign_names)
+    client
+        .character_type()
+        .upsert(
+            character_type::UniqueWhereParam::IdEquals(CharacterType::NPC as i32),
+            character_type::create(
+                String::from("NPC"),
+                vec![character_type::SetParam::SetId(CharacterType::NPC as i32)],
+            ),
+            vec![character_type::SetParam::SetName(String::from("NPC"))],
+        )
+        .exec()
+        .await?;
+    Ok(())
+}
+
+type CampaignData = campaign::Data;
+
+#[tauri::command]
+async fn list_campaigns() -> Result<Vec<CampaignData>, QueryError> {
+    let client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+    let campaigns = client.campaign().find_many(vec![]).exec().await?;
+    Ok(campaigns)
 }
 
 #[tauri::command]
@@ -77,11 +109,6 @@ async fn delete_campaign(campaign_name: String) -> Result<(), QueryError> {
 struct CampaignId(i32);
 
 type CharacterData = character::Data;
-#[derive(Debug)]
-enum CharacterType {
-    Player,
-    NPC,
-}
 
 #[tauri::command]
 async fn list_players(campaign_id: CampaignId) -> Result<Vec<CharacterData>, QueryError> {
@@ -105,7 +132,7 @@ async fn list_players(campaign_id: CampaignId) -> Result<Vec<CharacterData>, Que
 }
 
 #[tauri::command]
-async fn add_character(campaign_id: CampaignId, character_name: String) -> Result<(), QueryError> {
+async fn add_player(campaign_id: CampaignId, player_name: String) -> Result<(), QueryError> {
     let client = PrismaClient::_builder()
         .build()
         .await
@@ -113,7 +140,7 @@ async fn add_character(campaign_id: CampaignId, character_name: String) -> Resul
     client
         .character()
         .create(
-            character_name,
+            player_name,
             true,
             true,
             campaign::UniqueWhereParam::IdEquals(campaign_id.0),

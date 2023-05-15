@@ -15,33 +15,32 @@ import Link from 'next/link'
 
 const inter = Inter({ subsets: ['latin'] })
 
-const Greet = () => {
-  useEffect(() => {
-    invoke('say_hello').then(console.log).catch(console.error)
-  }, [])
+interface Campaign {
+  name: string
+  id: number
 }
 
-const fill_campaign_names = (setNames: React.Dispatch<React.SetStateAction<string[]>>) => {
-  useEffect(() => {
-    invoke('list_campaigns').then((message: any) => { setNames(message as string[]) }).catch(console.error)
-  }, [])
-}
 
 
 
 export default function Home() {
-  const [campaign_names, setCampaignNames] = useState<string[]>([])
+  const [campaigns, setCampaigns] = useState<Campaign[]>([])
   const [new_campaign_name, setNewCampaignName] = useState<string>("New Campaign")
 
-  Greet()
-  fill_campaign_names(setCampaignNames)
-  useEffect(() => console.log(campaign_names), [campaign_names])
+  const initialize = () => {
+    useEffect(() => {
+      invoke('list_campaigns').then((message: any) => { setCampaigns(message as Campaign[]) }).catch(console.error);
+      invoke('upsert_character_type_enum').then(console.log).catch(console.error);
+    }, [])
+  }
+
+  initialize()
 
   const handle_delete = async (name: string) => {
     try {
       await invoke('delete_campaign', { campaignName: name });
       const message = await invoke('list_campaigns');
-      setCampaignNames(message as string[]);
+      setCampaigns(message as Campaign[]);
     } catch (error) {
       console.error(error);
     }
@@ -51,7 +50,7 @@ export default function Home() {
     try {
       await invoke('add_campaign', { campaignName: name });
       const message = await invoke('list_campaigns');
-      setCampaignNames(message as string[]);
+      setCampaigns(message as Campaign[]);
       setNewCampaignName("New Campaign"); // Reset the input field after adding a campaign
     } catch (error) {
       console.error(error);
@@ -64,16 +63,17 @@ export default function Home() {
     >
       <div className="flex flex-col justify-start">
         <li className="flex flex-col">
-          {campaign_names.map((name) => (
+          {campaigns.map((campaign) => (
             <div className="flex flex-row space-x-2">
               <Link className="text-[#362A48] text-lg font-bold font-serif border-2 border-[#7170A5] rounded-md px-2" href={{
-                pathname: '/characters/[name]', query: {
-                  name: name
+                pathname: '/campaign/[campaign_id]', query: {
+                  name: campaign.name,
+                  campaign_id: campaign.id
                 }
               }}
-              > {name} </Link>
+              > {campaign.name} </Link>
               <button
-                onClick={() => handle_delete(name)}>
+                onClick={() => handle_delete(campaign.name)}>
                 <TrashIcon className="h-5 w-5 text-[#905468]" />
               </button>
             </div>
