@@ -4,6 +4,7 @@ import { invoke } from '@tauri-apps/api/tauri'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import { TrashIcon, PlusIcon } from '@heroicons/react/24/solid'
+import { CampaignCard } from '../components/campaign_card'
 import Link from 'next/link'
 
 
@@ -61,17 +62,17 @@ export default function Home() {
     <main
       className={`flex min-h-screen p-24 ${inter.className}`}
     >
-      <div className="flex flex-col justify-start">
-        <li className="flex flex-col">
+      <div className="flex flex-col justify-start w-full">
+        <li className="flex flex-col space-y-2">
           {campaigns.map((campaign) => (
             <div className="flex flex-row space-x-2">
-              <Link className="text-[#362A48] text-lg font-bold font-serif border-2 border-[#7170A5] rounded-md px-2" href={{
+              <Link className="text-[#362A48] text-lg font-bold font-serif rounded-md px-2 w-3/4" href={{
                 pathname: '/campaign/[campaign_id]', query: {
                   name: campaign.name,
                   campaign_id: campaign.id
                 }
               }}
-              > {campaign.name} </Link>
+              > <CampaignCard campaign={{ campaign_name: campaign.name }} /> </Link>
               <button
                 onClick={() => handle_delete(campaign.name)}>
                 <TrashIcon className="h-5 w-5 text-[#905468]" />
