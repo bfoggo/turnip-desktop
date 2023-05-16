@@ -71,9 +71,22 @@ export default function Home() {
                 </div>
               </button>
             </div>
-            <Modal isOpen={showNewCampaignModal} onRequestClose={() => setShowNewCampaignModal(false)}>
-              <NewCampaignModal />
-            </Modal>
+              <Modal isOpen={showNewCampaignModal} onRequestClose={() => setShowNewCampaignModal(false)} style={{
+                overlay: {
+                  backgroundColor: 'rgba(0,0,0,0.5)'
+                },
+                content: {
+                  top: '50%',
+                  left: '50%',
+                  right: 'auto',
+                  bottom: 'auto',
+                  transform: 'translate(-50%, -50%)',
+                  backgroundColor: 'rgba(0,0,0,0.0)',
+                  border: 'none'
+                }
+              }}>
+                <NewCampaignModal />
+              </Modal>
           </li>
         </div >
 
