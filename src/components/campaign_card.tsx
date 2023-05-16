@@ -37,11 +37,9 @@ export const NewCampaignModal = ({ add_campaign }: { add_campaign: (name: string
         <div className="flex flex-col items-center rounded-lg shadow md:flex-row md:max-w-xl
         bg-light w-full h-full
         ">
-            <div className="flex flex-col justify-between p-4 leading-normal">
-                <h5 className="mb-0 text-md font-serif tracking-tight text-black">New Campaign</h5>
-                <div className="flex flex-row space-x-2">
+                <div className="flex px-2 py-2 flex-row space-x-2 items-center">
                     <input
-                        className="px-3 py-2 mb-1 text-base text-gray-700 placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                        className="font-serif place-items-center px-3 text-base text-dark placeholder-gray-600 bg-light rounded-lg focus:shadow-outline"
                         placeholder="New Campaign Name"
                         value={newCampaignName}
                         onChange={(e) => setNewCampaignName(e.target.value)}
@@ -52,6 +50,5 @@ export const NewCampaignModal = ({ add_campaign }: { add_campaign: (name: string
                     </button>
                 </div>
             </div>
-        </div>
     )
 }

@@ -7,9 +7,9 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      sans: ['Inter', 'sans-serif'],
-      serif: ['Merriweather', 'serif'],
-      mono: ['JetBrains Mono', 'monospace'],
+      sans: ['Roboto', 'Arial', 'sans-serif'],
+      serif: ['Georgia', 'Times New Roman', 'serif'],
+      mono: ['Fira Code', 'Courier New', 'monospace'],
     },
     colors: {
       "light": "#e6e3d9",

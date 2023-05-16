@@ -53,7 +53,7 @@ export default function Home() {
     <div className="bg-dark"
     >
       <main
-        className={`flex min-h-screen p-24 ${inter.className}`}
+        className={`flex min-h-screen p-20 ${inter.className}`}
       >
         <div className="flex flex-col justify-start w-full">
           <li className="flex flex-col space-y-2">
@@ -82,7 +82,7 @@ export default function Home() {
             </div>
             <Modal isOpen={showNewCampaignModal} onRequestClose={() => setShowNewCampaignModal(false)} style={{
               overlay: {
-                backgroundColor: 'rgba(0,0,0,0.5)'
+                backgroundColor: 'rgba(0,0,0,0.3)'
               },
               content: {
                 top: '50%',
