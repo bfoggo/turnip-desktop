@@ -7,6 +7,7 @@ import { TrashIcon, PlusIcon } from '@heroicons/react/24/solid'
 import { CampaignCard, NewCampaignCard, NewCampaignModal } from '../components/campaign_card'
 import Modal from "react-modal";
 import Link from 'next/link'
+import { Header } from '../components/header'
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -53,12 +54,14 @@ export default function Home() {
     <div className="bg-dark"
     >
       <main
-        className={`flex flex-col min-h-screen space-y-4 ${inter.className}`}
+        className={`px-5 flex flex-col min-h-screen space-y-4 ${inter.className}`}
       >
-        <h1 className='text-4xl text-brand font-bold font-mono pl-10 pt-10'>Campaigns</h1>
-        <div className='px-10 w-full h-full'>
-          <div className="flex flex-col justify-start w-full">
-            <li className="flex flex-col space-y-2">
+        <Header />
+
+        <div className='pl-2 w-full h-full'>
+          <h1 className='text-2xl font-serif text-light'>Campaigns</h1>
+          <div className="-ml-2 pt-2 flex flex-col justify-start w-full">
+            <li className="flex flex-col space-y-1">
               {campaigns.map((campaign) => (
                 <div className="flex flex-row space-x-2 w-3/4">
                   <Link className="px-2 w-full" href={{
@@ -102,6 +105,6 @@ export default function Home() {
           </div >
         </div>
       </main >
-    </div>
+    </div >
   )
 }

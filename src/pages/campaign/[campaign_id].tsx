@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { TrashIcon } from '@heroicons/react/24/solid';
+import { Header } from '../../components/header';
 
 interface CharacterData {
     id: number
@@ -49,8 +50,10 @@ const CampaignPage = () => {
 
     return (
         <main
-            className={`flex min-h-screen p-24`}
+            className={`px-5 flex flex-col min-h-screen space-y-4`}
         >
+            <Header />
+
             <div>
                 <h1>Campaign: {campaign_name}</h1>
                 <div className='flex flex-col'>
