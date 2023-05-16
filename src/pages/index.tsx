@@ -21,16 +21,25 @@ export default function Home() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
   const [showNewCampaignModal, setShowNewCampaignModal] = useState<boolean>(false)
 
-  const initialize = () => {
-    useEffect(() => {
-      invoke('list_campaigns').then((message: any) => { setCampaigns(message as Campaign[]) }).catch(console.error);
-      invoke('upsert_character_type_enum').then(console.log).catch(console.error);
-    }, [])
-  }
+  useEffect(() => {
+    invoke('upsert_character_type_enum').then(console.log).catch(console.error);
+  }, [])
 
-  initialize()
+  useEffect(() => {
+    invoke('list_campaigns').then((message: any) => { setCampaigns(message as Campaign[]) }).catch(console.error);
+  }, [])
 
-  const handle_delete = async (name: string) => {
+  const addCampaign = async (name: string) => {
+    try {
+      await invoke('add_campaign', { campaignName: name });
+      const message = await invoke('list_campaigns');
+      setCampaigns(message as Campaign[]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deleteCampaign = async (name: string) => {
     try {
       await invoke('delete_campaign', { campaignName: name });
       const message = await invoke('list_campaigns');
@@ -38,7 +47,7 @@ export default function Home() {
     } catch (error) {
       console.error(error);
     }
-  };
+  }
 
   return (
     <div className="bg-dark"
@@ -58,7 +67,7 @@ export default function Home() {
                 }}
                 > <CampaignCard campaign={{ campaign_name: campaign.name }} /> </Link>
                 <button
-                  onClick={() => handle_delete(campaign.name)}>
+                  onClick={() => deleteCampaign(campaign.name)}>
                   <TrashIcon className="h-5 w-5 text-dark-accent hover:text-dark-accent-hover
                   " />
                 </button>
@@ -71,28 +80,24 @@ export default function Home() {
                 </div>
               </button>
             </div>
-              <Modal isOpen={showNewCampaignModal} onRequestClose={() => setShowNewCampaignModal(false)} style={{
-                overlay: {
-                  backgroundColor: 'rgba(0,0,0,0.5)'
-                },
-                content: {
-                  top: '50%',
-                  left: '50%',
-                  right: 'auto',
-                  bottom: 'auto',
-                  transform: 'translate(-50%, -50%)',
-                  backgroundColor: 'rgba(0,0,0,0.0)',
-                  border: 'none'
-                }
-              }}>
-                <NewCampaignModal />
-              </Modal>
+            <Modal isOpen={showNewCampaignModal} onRequestClose={() => setShowNewCampaignModal(false)} style={{
+              overlay: {
+                backgroundColor: 'rgba(0,0,0,0.5)'
+              },
+              content: {
+                top: '50%',
+                left: '50%',
+                right: 'auto',
+                bottom: 'auto',
+                transform: 'translate(-50%, -50%)',
+                backgroundColor: 'rgba(0,0,0,0.0)',
+                border: 'none'
+              }
+            }}>
+              <NewCampaignModal add_campaign={(name: string) => addCampaign(name).then(() => setShowNewCampaignModal(false))} />
+            </Modal>
           </li>
         </div >
-
-
-
-
       </main >
     </div>
   )

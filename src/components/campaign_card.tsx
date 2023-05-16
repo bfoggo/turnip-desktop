@@ -30,16 +30,8 @@ export const NewCampaignCard = ({ card_title }: { card_title: string }) => {
     )
 }
 
-export const NewCampaignModal = () => {
+export const NewCampaignModal = ({ add_campaign }: { add_campaign: (name: string) => void }) => {
     let [newCampaignName, setNewCampaignName] = useState<string>("");
-
-    const handle_add = async (name: string) => {
-        try {
-            await invoke('add_campaign', { campaignName: name });
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     return (
         <div className="flex flex-col items-center rounded-lg shadow md:flex-row md:max-w-xl
@@ -55,7 +47,7 @@ export const NewCampaignModal = () => {
                         onChange={(e) => setNewCampaignName(e.target.value)}
                     />
                     <button
-                        onClick={() => handle_add(newCampaignName)}>
+                        onClick={() => { add_campaign(newCampaignName) }}>
                         <PlusIcon className="h-5 w-5 text-dark-accent hover:text-dark-accent-hover" />
                     </button>
                 </div>
