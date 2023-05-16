@@ -8,7 +8,7 @@ interface CampaignProps {
 
 export const CampaignCard = ({ campaign }: { campaign: CampaignProps }) => {
     return (
-        <div className="grid justify-items-left border border-dark-lighter rounded-md shadow-lg bg-dark hover:border-light-accent w-full
+        <div className="grid justify-items-left border border-dark-lighter rounded-sm shadow-lg bg-dark hover:border-light-accent w-full
         ">
             <div className="flex p-4 leading-normal">
                 <h5 className="mb-0 font-medium font-serif text-light">{campaign.campaign_name}</h5>
@@ -19,7 +19,7 @@ export const CampaignCard = ({ campaign }: { campaign: CampaignProps }) => {
 
 export const NewCampaignCard = () => {
     return (
-        <div className="grid justify-items-left rounded-md shadow
+        <div className="grid justify-items-left rounded-sm shadow
         bg-dark border border-dark-lighter w-full hover:border-light-accent
         ">
             <div className="flex  p-4 leading-normal">

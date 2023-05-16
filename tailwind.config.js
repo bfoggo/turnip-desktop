@@ -18,6 +18,7 @@ module.exports = {
       "light-accent": "#c2a6a0",
       "light-accent-hover": "#b08f8a",
       "brand": "#e35c79",
+      "brand-hover": "#d34f6a",
       "dark-accent": "#af3f2d",
       "dark-accent-hover": "#9a3628",
       "dark": "#292d53",

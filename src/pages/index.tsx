@@ -54,7 +54,7 @@ export default function Home() {
     <div className="bg-dark"
     >
       <main
-        className={`px-5 flex flex-col min-h-screen space-y-4 ${inter.className}`}
+        className={`px-5 flex flex-col min-h-screen space-y-3 ${inter.className}`}
       >
         <Header />
 
@@ -79,7 +79,7 @@ export default function Home() {
                 </div>
               ))}
               <div className=' flex flex-row space-x-2 w-3/4'>
-                <button className='w-full pr-6' onClick={() => setShowNewCampaignModal(true)}>
+                <button className='w-full pr-7' onClick={() => setShowNewCampaignModal(true)}>
                   <div className="px-2 w-full">
                     <NewCampaignCard />
                   </div>
