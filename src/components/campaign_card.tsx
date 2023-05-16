@@ -8,7 +8,7 @@ interface CampaignProps {
 
 export const CampaignCard = ({ campaign }: { campaign: CampaignProps }) => {
     return (
-        <div className="flex flex-col items-center rounded-lg shadow md:flex-row md:max-w-xl
+        <div className="flex flex-col items-center rounded-lg shadow
         bg-light hover:bg-lighter w-full
         ">
             <div className="flex flex-col justify-between p-4 leading-normal">
@@ -20,7 +20,7 @@ export const CampaignCard = ({ campaign }: { campaign: CampaignProps }) => {
 
 export const NewCampaignCard = ({ card_title }: { card_title: string }) => {
     return (
-        <div className="flex flex-col items-center rounded-lg shadow md:flex-row md:max-w-xl
+        <div className="flex flex-col items-center rounded-lg shadow
         bg-light-accent w-full
         ">
             <div className="flex flex-col justify-between p-4 leading-normal">

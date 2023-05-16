@@ -74,7 +74,7 @@ export default function Home() {
               </div>
             ))}
             <div className=' flex flex-row space-x-2 w-3/4'>
-              <button onClick={() => setShowNewCampaignModal(true)}>
+              <button className='w-full pr-6' onClick={() => setShowNewCampaignModal(true)}>
                 <div className="px-2 w-full">
                   <NewCampaignCard card_title="New Campaign" />
                 </div>
