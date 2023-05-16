@@ -53,51 +53,54 @@ export default function Home() {
     <div className="bg-dark"
     >
       <main
-        className={`flex min-h-screen p-20 ${inter.className}`}
+        className={`flex flex-col min-h-screen space-y-4 ${inter.className}`}
       >
-        <div className="flex flex-col justify-start w-full">
-          <li className="flex flex-col space-y-2">
-            {campaigns.map((campaign) => (
-              <div className="flex flex-row space-x-2 w-3/4">
-                <Link className="px-2 w-full" href={{
-                  pathname: '/campaign/[campaign_id]', query: {
-                    name: campaign.name,
-                    campaign_id: campaign.id
-                  }
-                }}
-                > <CampaignCard campaign={{ campaign_name: campaign.name }} /> </Link>
-                <button
-                  onClick={() => deleteCampaign(campaign.name)}>
-                  <TrashIcon className="h-5 w-5 text-dark-accent hover:text-dark-accent-hover
+        <h1 className='text-4xl text-brand font-bold font-mono pl-10 pt-10'>Campaigns</h1>
+        <div className='px-10 w-full h-full'>
+          <div className="flex flex-col justify-start w-full">
+            <li className="flex flex-col space-y-2">
+              {campaigns.map((campaign) => (
+                <div className="flex flex-row space-x-2 w-3/4">
+                  <Link className="px-2 w-full" href={{
+                    pathname: '/campaign/[campaign_id]', query: {
+                      name: campaign.name,
+                      campaign_id: campaign.id
+                    }
+                  }}
+                  > <CampaignCard campaign={{ campaign_name: campaign.name }} /> </Link>
+                  <button
+                    onClick={() => deleteCampaign(campaign.name)}>
+                    <TrashIcon className="h-5 w-5 text-dark-accent hover:text-dark-accent-hover
                   " />
+                  </button>
+                </div>
+              ))}
+              <div className=' flex flex-row space-x-2 w-3/4'>
+                <button className='w-full pr-6' onClick={() => setShowNewCampaignModal(true)}>
+                  <div className="px-2 w-full">
+                    <NewCampaignCard />
+                  </div>
                 </button>
               </div>
-            ))}
-            <div className=' flex flex-row space-x-2 w-3/4'>
-              <button className='w-full pr-6' onClick={() => setShowNewCampaignModal(true)}>
-                <div className="px-2 w-full">
-                  <NewCampaignCard card_title="New Campaign" />
-                </div>
-              </button>
-            </div>
-            <Modal isOpen={showNewCampaignModal} onRequestClose={() => setShowNewCampaignModal(false)} style={{
-              overlay: {
-                backgroundColor: 'rgba(0,0,0,0.3)'
-              },
-              content: {
-                top: '50%',
-                left: '50%',
-                right: 'auto',
-                bottom: 'auto',
-                transform: 'translate(-50%, -50%)',
-                backgroundColor: 'rgba(0,0,0,0.0)',
-                border: 'none'
-              }
-            }}>
-              <NewCampaignModal add_campaign={(name: string) => addCampaign(name).then(() => setShowNewCampaignModal(false))} />
-            </Modal>
-          </li>
-        </div >
+              <Modal isOpen={showNewCampaignModal} onRequestClose={() => setShowNewCampaignModal(false)} style={{
+                overlay: {
+                  backgroundColor: 'rgba(0,0,0,0.3)'
+                },
+                content: {
+                  top: '50%',
+                  left: '50%',
+                  right: 'auto',
+                  bottom: 'auto',
+                  transform: 'translate(-50%, -50%)',
+                  backgroundColor: 'rgba(0,0,0,0.0)',
+                  border: 'none'
+                }
+              }}>
+                <NewCampaignModal add_campaign={(name: string) => addCampaign(name).then(() => setShowNewCampaignModal(false))} />
+              </Modal>
+            </li>
+          </div >
+        </div>
       </main >
     </div>
   )

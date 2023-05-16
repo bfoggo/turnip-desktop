@@ -13,6 +13,7 @@ module.exports = {
     },
     colors: {
       "light": "#e6e3d9",
+      "light-darker": "#d1cfc6",
       "lighter": "#f5f5f5",
       "light-accent": "#c2a6a0",
       "light-accent-hover": "#b08f8a",
@@ -20,6 +21,7 @@ module.exports = {
       "dark-accent": "#af3f2d",
       "dark-accent-hover": "#9a3628",
       "dark": "#292d53",
+      "dark-lighter": "#3c4066",
     },
     extend: {
       backgroundImage: {

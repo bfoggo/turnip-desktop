@@ -8,23 +8,22 @@ interface CampaignProps {
 
 export const CampaignCard = ({ campaign }: { campaign: CampaignProps }) => {
     return (
-        <div className="flex flex-col items-center rounded-lg shadow
-        bg-light hover:bg-lighter w-full
+        <div className="grid justify-items-left border border-dark-lighter rounded-md shadow-lg bg-dark hover:border-light-accent w-full
         ">
-            <div className="flex flex-col justify-between p-4 leading-normal">
-                <h5 className="mb-0 text-md font-serif tracking-tight text-black">{campaign.campaign_name}</h5>
+            <div className="flex p-4 leading-normal">
+                <h5 className="mb-0 font-medium font-serif text-light">{campaign.campaign_name}</h5>
             </div>
         </div>
     )
 }
 
-export const NewCampaignCard = ({ card_title }: { card_title: string }) => {
+export const NewCampaignCard = () => {
     return (
-        <div className="flex flex-col items-center rounded-lg shadow
-        bg-light-accent w-full
+        <div className="grid justify-items-left rounded-md shadow
+        bg-dark border border-dark-lighter w-full hover:border-light-accent
         ">
-            <div className="flex flex-col justify-between p-4 leading-normal">
-                <h5 className="mb-0 text-md font-serif tracking-tight text-black">{card_title}</h5>
+            <div className="flex  p-4 leading-normal">
+                <h5 className="mb-0 text-md font-medium font-serif tracking-tight text-light-accent">New Campaign</h5>
             </div>
         </div>
     )
