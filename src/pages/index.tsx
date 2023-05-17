@@ -56,24 +56,24 @@ export default function Home() {
       <main
         className={`px-5 flex flex-col min-h-screen space-y-3 ${inter.className}`}
       >
-        <Header />
+        <Header crumbs={[]} />
 
         <div className='pl-2 w-full h-full'>
           <h1 className='text-2xl font-serif text-light'>Campaigns</h1>
           <div className="-ml-2 pt-2 flex flex-col justify-start w-full">
-            <li className="flex flex-col space-y-1">
+            <li className="flex flex-col space-y-1 pb-3">
               {campaigns.map((campaign) => (
                 <div className="flex flex-row space-x-2 w-3/4">
                   <Link className="px-2 w-full" href={{
                     pathname: '/campaign/[campaign_id]', query: {
-                      name: campaign.name,
+                      campaign_name: campaign.name,
                       campaign_id: campaign.id
                     }
                   }}
                   > <CampaignCard campaign={{ campaign_name: campaign.name }} /> </Link>
                   <button
                     onClick={() => deleteCampaign(campaign.name)}>
-                    <TrashIcon className="h-5 w-5 text-dark-accent hover:text-dark-accent-hover
+                    <TrashIcon className="h-5 w-5 text-danger hover:text-more-danger
                   " />
                   </button>
                 </div>
