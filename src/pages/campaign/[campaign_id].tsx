@@ -50,7 +50,7 @@ const CampaignPage = () => {
 
     return (
         <main
-            className={`bg-dark px-5 flex flex-col min-h-screen`}
+            className={`bg-gradient-to-b from-dark to-light min-h-screen" px-5 flex flex-col min-h-screen`}
         >
             <Header crumbs={[{
                 name: `${campaign_name}`,
@@ -64,8 +64,8 @@ const CampaignPage = () => {
             }]} />
             <div className='flex flex-row space-x-2'>
                 <aside className='-ml-5 w-1/5 h-screen'>
-                    <div className='h-full flex flex-col space-y-2 bg-primary'>
-                        <ul className='text-md font-serif  text-dark text-opacity-50 pt-1 pl-5'>
+                    <div className='h-full flex flex-col items-center space-y-2 bg-gradient-to-b from-primary to-light'>
+                        <ul className='text-md font-serif  text-dark text-opacity-50 pt-1 pr-5'>
                             <li className='hover:text-opacity-100'> <a href='#'>Characters</a></li>
                         </ul>
                     </div>

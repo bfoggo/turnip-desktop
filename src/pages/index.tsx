@@ -51,7 +51,7 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-dark"
+    <div className="bg-gradient-to-b from-dark to-light min-h-screen"
     >
       <main
         className={`px-5 flex flex-col min-h-screen space-y-3 ${inter.className}`}
