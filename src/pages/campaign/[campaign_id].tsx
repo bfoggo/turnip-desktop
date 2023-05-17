@@ -50,7 +50,7 @@ const CampaignPage = () => {
 
     return (
         <main
-            className={`bg-dark px-5 flex flex-col min-h-screen space-y-4`}
+            className={`bg-dark px-5 flex flex-col min-h-screen`}
         >
             <Header crumbs={[{
                 name: `${campaign_name}`,
@@ -62,6 +62,14 @@ const CampaignPage = () => {
                     }
                 }
             }]} />
+            <div className='flex flex-row space-x-2'>
+                <aside className='-ml-5 w-1/5 h-screen'>
+                    <div className='h-full flex flex-col space-y-2 bg-primary'>
+                        <ul className='text-md font-serif  text-dark text-opacity-50 pt-1 pl-5'>
+                            <li className='hover:text-opacity-100'> <a href='#'>Characters</a></li>
+                        </ul>
+                    </div>
+                </aside>
 
             <div className='flex flex-col'>
                 <h1 className='text-2xl font-serif text-light'>Characters</h1>
@@ -78,6 +86,7 @@ const CampaignPage = () => {
                 <input type='text' placeholder='New Character' onChange={(e) => setNewPlayerName(e.target.value)} />
                 <button onClick={() => add_player(new_player_name)}
                 >Add</button>
+            </div>
             </div>
         </main>
     );
