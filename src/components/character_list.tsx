@@ -7,6 +7,7 @@ interface CharacterData {
 }
 
 interface CharacterListProps {
+    title: string
     characters: CharacterData[]
     delete_fn: (character_id: number) => void
     add_fn: (name: string) => void
@@ -17,7 +18,7 @@ export const CharacterList = (props: CharacterListProps) => {
 
     return (
         <div className='flex flex-col space-y-1'>
-            <h1 className='text-2xl font-serif text-light'>Characters</h1>
+            <h1 className='text-2xl font-serif text-light'>{props.title}</h1>
             <ul >
                 {props.characters.map((player) => (
                     <li>
