@@ -23,14 +23,14 @@ export const CharacterList = (props: CharacterListProps) => {
                 {props.characters.map((player) => (
                     <li>
                         <div className=' px-4 flex flex-row space-x-2 text-black text-lg font-serif font-md'>
-                            <h2>{player.name}</h2>
+                            <h2 className="w-28">{player.name}</h2>
                             <button onClick={() => props.delete_fn(player.id)}><TrashIcon className="h-4 w-4 text-[#905468]" /></button>
                         </div>
                     </li>
                 ))}
             </ul>
-            <div className="px-2 flex flex-row space-x-2 text-black text-lg font-serif font-md">
-                <input className="w-32 rounded-lg bg-opacity-100 text-black text-lg font-serif font-md px-2"
+            <div className="px-2 flex flex-row space-x-3 text-black text-lg font-serif font-md">
+                <input className="w-28 rounded-lg bg-opacity-100 text-black text-lg font-serif font-md px-2"
                     type='text' placeholder='New Character' onChange={(e) => setNewPlayerName(e.target.value)}
                 />
                 <button onClick={() => props.add_fn(new_player_name)}
