@@ -3,7 +3,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { TrashIcon } from '@heroicons/react/24/solid';
-import { Header } from '../../components/header';
+import { Header } from '../../../components/header';
 import { Sidebar } from '@/components/sidebar';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { CharacterList } from '@/components/character_list';
@@ -25,7 +25,7 @@ const CampaignPage = () => {
         invoke('list_players', { campaignId: parseInt(campaign_id as string, 10) }).then((message) => setPlayers(message as CharacterData[])).catch(console.error)
     }, [])
     useEffect(() => {
-        invoke('list_npcs', { campaignId: parseInt(campaign_id as string, 10) }).then((message) => setPlayers(message as CharacterData[])).catch(console.error)
+        invoke('list_npcs', { campaignId: parseInt(campaign_id as string, 10) }).then((message) => setNpcs(message as CharacterData[])).catch(console.error)
     }, [])
 
     const add_player = async (name: string) => {
@@ -33,7 +33,6 @@ const CampaignPage = () => {
             await invoke('add_player', { campaignId: parseInt(campaign_id as string, 10), playerName: name });
             const message = await invoke('list_players', { campaignId: parseInt(campaign_id as string, 10) });
             setPlayers(message as CharacterData[]);
-            console.log(players)
         } catch (error) {
             console.error(error);
         }
@@ -44,7 +43,6 @@ const CampaignPage = () => {
             await invoke('add_npc', { campaignId: parseInt(campaign_id as string, 10), npcName: name });
             const message = await invoke('list_npcs', { campaignId: parseInt(campaign_id as string, 10) });
             setNpcs(message as CharacterData[]);
-            console.log(players)
         } catch (error) {
             console.error(error);
         }
@@ -52,12 +50,12 @@ const CampaignPage = () => {
 
     const delete_character = async (character_id: number) => {
         try {
-            await invoke('delete_character', { campaignId: parseInt(campaign_id as string, 10), characterId: character_id });
+            let cid = parseInt(campaign_id as string, 10);
+            await invoke('delete_character', { characterId: character_id });
             const player_list_message = await invoke('list_players', { campaignId: parseInt(campaign_id as string, 10) });
             setPlayers(player_list_message as CharacterData[]);
             const npc_list_message = await invoke('list_npcs', { campaignId: parseInt(campaign_id as string, 10) });
-            setPlayers(npc_list_message as CharacterData[]);
-            console.log(players)
+            setNpcs(npc_list_message as CharacterData[]);
         } catch (error) {
             console.error(error);
         }
@@ -68,7 +66,7 @@ const CampaignPage = () => {
             className={`bg-gradient-to-b from-dark to-light min-h-screen" px-5 flex flex-col min-h-screen`}
         >
             <Header crumbs={[{
-                name: `${campaign_name}`,
+                name: `${campaign_name} : Dashboard`,
                 href: {
                     pathname: '/campaign/[campaign_id]',
                     query: {
