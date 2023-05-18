@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { Header } from '../../components/header';
 import { Sidebar } from '@/components/sidebar';
+import { PlusIcon } from '@heroicons/react/24/solid';
 
 interface CharacterData {
     id: number
@@ -65,21 +66,25 @@ const CampaignPage = () => {
             }]} />
             <div className='flex flex-row space-x-2'>
                 <Sidebar />
-                <div className='flex flex-col'>
+                <div className='flex flex-col space-y-1'>
                     <h1 className='text-2xl font-serif text-light'>Characters</h1>
-                    <ul>
+                    <ul >
                         {players.map((player) => (
                             <li>
-                                <div className='flex flex-row space-x-2'>
-                                    {player.name}
-                                    <button onClick={() => delete_character(player.id)}><TrashIcon className="h-5 w-5 text-[#905468]" /></button>
+                                <div className=' px-4 flex flex-row space-x-2 text-black text-lg font-serif font-md'>
+                                    <h2>{player.name}</h2>
+                                    <button onClick={() => delete_character(player.id)}><TrashIcon className="h-4 w-4 text-[#905468]" /></button>
                                 </div>
                             </li>
                         ))}
                     </ul>
-                    <input type='text' placeholder='New Character' onChange={(e) => setNewPlayerName(e.target.value)} />
-                    <button onClick={() => add_player(new_player_name)}
-                    >Add</button>
+                    <div className="px-2 flex flex-row space-x-2 text-black text-lg font-serif font-md">
+                        <input className="w-32 rounded-lg bg-opacity-100 text-black text-lg font-serif font-md px-2"
+                            type='text' placeholder='New Character' onChange={(e) => setNewPlayerName(e.target.value)}
+                        />
+                        <button onClick={() => add_player(new_player_name)}
+                        ><PlusIcon className="w-5 h-5"></PlusIcon></button>
+                    </div>
                 </div>
             </div>
         </main>
