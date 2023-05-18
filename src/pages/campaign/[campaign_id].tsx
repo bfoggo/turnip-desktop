@@ -79,10 +79,12 @@ const CampaignPage = () => {
             }]} />
             <div className='flex flex-row space-x-2'>
                 <Sidebar />
-                <CharacterList title="Characters" characters={players} delete_fn={delete_character} add_fn={add_player} />
-                <CharacterList title="NPCs" characters={npcs} delete_fn={delete_character} add_fn={add_npc} />
+                <div className="flex flex-row gap-x-32">
+                    <CharacterList title="Characters" characters={players} delete_fn={delete_character} add_fn={add_player} />
+                    <CharacterList title="NPCs" characters={npcs} delete_fn={delete_character} add_fn={add_npc} />
+                </div>
             </div>
-        </main>
+        </main >
     );
 };
 

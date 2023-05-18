@@ -29,9 +29,9 @@ export const CharacterList = (props: CharacterListProps) => {
                     </li>
                 ))}
             </ul>
-            <div className="px-2 flex flex-row space-x-3 text-black text-lg font-serif font-md">
+            <div className="px-2 flex flex-row space-x-4 text-black text-lg font-serif font-md">
                 <input className="w-28 rounded-lg bg-opacity-100 text-black text-lg font-serif font-md px-2"
-                    type='text' placeholder='New Character' onChange={(e) => setNewPlayerName(e.target.value)}
+                    type='text' placeholder='New' onChange={(e) => setNewPlayerName(e.target.value)}
                 />
                 <button onClick={() => props.add_fn(new_player_name)}
                 ><PlusIcon className="w-5 h-5"></PlusIcon></button>
