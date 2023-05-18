@@ -17,6 +17,8 @@ fn main() {
             delete_campaign,
             list_players,
             add_player,
+            list_npcs,
+            add_npc,
             delete_character,
         ])
         .run(tauri::generate_context!())
@@ -132,6 +134,27 @@ async fn list_players(campaign_id: CampaignId) -> Result<Vec<CharacterData>, Que
 }
 
 #[tauri::command]
+async fn list_npcs(campaign_id: CampaignId) -> Result<Vec<CharacterData>, QueryError> {
+    let client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+    let npcs = client
+        .character()
+        .find_many(vec![
+            character::WhereParam::CampaignId(prisma::read_filters::IntFilter::Equals(
+                campaign_id.0,
+            )),
+            character::WhereParam::CharacterTypeId(prisma::read_filters::IntFilter::Equals(
+                CharacterType::NPC as i32,
+            )),
+        ])
+        .exec()
+        .await?;
+    Ok(npcs)
+}
+
+#[tauri::command]
 async fn add_player(campaign_id: CampaignId, player_name: String) -> Result<(), QueryError> {
     let client = PrismaClient::_builder()
         .build()
@@ -145,6 +168,27 @@ async fn add_player(campaign_id: CampaignId, player_name: String) -> Result<(), 
             true,
             campaign::UniqueWhereParam::IdEquals(campaign_id.0),
             character_type::UniqueWhereParam::IdEquals(CharacterType::Player as i32),
+            vec![],
+        )
+        .exec()
+        .await?;
+    Ok(())
+}
+
+#[tauri::command]
+async fn add_npc(campaign_id: CampaignId, npc_name: String) -> Result<(), QueryError> {
+    let client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+    client
+        .character()
+        .create(
+            npc_name,
+            true,
+            true,
+            campaign::UniqueWhereParam::IdEquals(campaign_id.0),
+            character_type::UniqueWhereParam::IdEquals(CharacterType::NPC as i32),
             vec![],
         )
         .exec()
