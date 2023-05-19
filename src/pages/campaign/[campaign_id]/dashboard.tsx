@@ -68,7 +68,7 @@ const CampaignPage = () => {
             <Header crumbs={[{
                 name: `${campaign_name} : Dashboard`,
                 href: {
-                    pathname: '/campaign/[campaign_id]',
+                    pathname: '/campaign/[campaign_id]/dashboard',
                     query: {
                         campaign_name: campaign_name as string,
                         campaign_id: campaign_id as string
