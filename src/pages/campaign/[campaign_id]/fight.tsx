@@ -73,7 +73,7 @@ const FightPage = () => {
             }]} />
             <div className='flex flex-row space-x-2'>
                 <Sidebar campaign_id={parseInt(campaign_id as string, 10)} campaign_name={campaign_name as string} />
-                <div className="flex flex-row gap-x-32">
+                <div className="flex flex-row gap-x-10">
                     <CharacterListInitiative title="Characters" characters={players} delete_fn={delete_character} add_fn={add_player} />
                     <CharacterListInitiative title="NPCs" characters={npcs} delete_fn={delete_character} add_fn={add_npc} />
                 </div>

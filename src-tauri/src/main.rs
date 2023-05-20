@@ -20,6 +20,8 @@ fn main() {
             list_npcs,
             add_npc,
             delete_character,
+            set_initiative,
+            get_character_data
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -208,4 +210,36 @@ async fn delete_character(character_id: i32) -> Result<(), QueryError> {
         .exec()
         .await?;
     Ok(())
+}
+
+#[tauri::command]
+async fn set_initiative(character_id: i32, initiative: i32) -> Result<(), QueryError> {
+    let client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+    client
+        .character()
+        .update(
+            character::UniqueWhereParam::IdEquals(character_id),
+            vec![character::SetParam::SetInitiative(Some(initiative))],
+        )
+        .exec()
+        .await?;
+    Ok(())
+}
+
+#[tauri::command]
+async fn get_character_data(character_id: i32) -> Result<CharacterData, QueryError> {
+    let client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+    let character = client
+        .character()
+        .find_unique(character::UniqueWhereParam::IdEquals(character_id))
+        .exec()
+        .await?
+        .unwrap();
+    Ok(character)
 }
