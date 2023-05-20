@@ -1,10 +1,6 @@
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/solid'
 import { useState } from 'react'
-
-interface CharacterData {
-    id: number
-    name: string
-}
+import { CharacterData } from '../types/character'
 
 interface CharacterListProps {
     title: string

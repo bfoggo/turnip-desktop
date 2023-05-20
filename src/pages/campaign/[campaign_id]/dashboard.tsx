@@ -7,11 +7,7 @@ import { Header } from '../../../components/header';
 import { Sidebar } from '@/components/sidebar';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { CharacterList } from '@/components/character_list';
-
-interface CharacterData {
-    id: number
-    name: string
-}
+import { CharacterData } from '../../../types/character';
 
 const CampaignPage = () => {
     const router = useRouter();
