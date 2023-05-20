@@ -48,7 +48,7 @@ export const CharacterListInitiative = (props: CharacterListProps) => {
                     <li>
                         <div className=' px-4 flex flex-row space-x-2 text-black text-lg font-serif font-md'>
                             <h2 className="w-28">{player.name}</h2>
-                            <input type="number" className="w-10 text-black text-lg font-serif font-md px-2" placeholder="init"
+                            <input type="number" className="w-28 text-black text-lg font-serif font-md px-2" placeholder="initiative"
                                 onChange={(e) => setInitiatives(initiaves?.splice(index, 1, parseInt(e.target.value)))}
                             />
                         </div>
