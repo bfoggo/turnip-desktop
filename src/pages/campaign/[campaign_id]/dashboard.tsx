@@ -9,7 +9,7 @@ import { PlusIcon } from '@heroicons/react/24/solid';
 import { CharacterList } from '@/components/character_list';
 import { CharacterData } from '../../../types/character';
 
-const CampaignPage = () => {
+const DashboardPage = () => {
     const router = useRouter();
     const { campaign_name, campaign_id } = router.query;
 
@@ -72,7 +72,7 @@ const CampaignPage = () => {
                 }
             }]} />
             <div className='flex flex-row space-x-2'>
-                <Sidebar />
+                <Sidebar campaign_id={parseInt(campaign_id as string, 10)} campaign_name={campaign_name as string} />
                 <div className="flex flex-row gap-x-32">
                     <CharacterList title="Characters" characters={players} delete_fn={delete_character} add_fn={add_player} />
                     <CharacterList title="NPCs" characters={npcs} delete_fn={delete_character} add_fn={add_npc} />
@@ -83,4 +83,4 @@ const CampaignPage = () => {
 };
 
 
-export default CampaignPage;
+export default DashboardPage;

@@ -35,3 +35,26 @@ export const CharacterList = (props: CharacterListProps) => {
         </div>
     )
 }
+
+export const CharacterListInitiative = (props: CharacterListProps) => {
+
+    const [initiaves, setInitiatives] = useState<number[]>();
+
+    return (
+        <div className='flex flex-col space-y-1'>
+            <h1 className='text-2xl font-serif text-light'>{props.title}</h1>
+            <ul >
+                {props.characters.map((player, index) => (
+                    <li>
+                        <div className=' px-4 flex flex-row space-x-2 text-black text-lg font-serif font-md'>
+                            <h2 className="w-28">{player.name}</h2>
+                            <input type="number" className="w-10 text-black text-lg font-serif font-md px-2" placeholder="init"
+                                onChange={(e) => setInitiatives(initiaves?.splice(index, 1, parseInt(e.target.value)))}
+                            />
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )
+}
