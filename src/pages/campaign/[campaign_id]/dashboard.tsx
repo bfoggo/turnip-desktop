@@ -64,6 +64,9 @@ const DashboardPage = () => {
         }
     };
 
+    list_players();
+    list_npcs();
+
     return (
         <main
             className={`bg-gradient-to-b from-dark to-light min-h-screen" px-5 flex flex-col min-h-screen`}

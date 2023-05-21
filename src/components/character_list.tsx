@@ -41,6 +41,7 @@ export const CharacterList = (props: CharacterListProps) => {
 interface CharacterListFightProps {
     title: string
     characters: CharacterData[]
+    submit_initiatives: (initiatives: number[]) => void
 }
 
 export const CharacterListFight = (props: CharacterListFightProps) => {
@@ -53,11 +54,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
             if (initiatives?.length != props.characters.length) {
                 throw new Error("Initiatives not set for all characters")
             }
-            for (let i = 0; i < initiatives.length; i++) {
-                await invoke('set_initiative', { characterId: props.characters[i].id, initiative: initiatives[i] }).then((response) => {
-                }
-                )
-            }
+            props.submit_initiatives(initiatives);
             setLocked(true);
         }
         catch (error) {
@@ -65,7 +62,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
         }
     }
 
-    const push_or_update_initiative = (index: number, new_value: number) => {
+    const push_or_update_initiative_list = (index: number, new_value: number) => {
         if (initiatives && initiatives.length > index) {
             initiatives[index] = new_value;
             return;
@@ -92,7 +89,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                                 <h2 className="pl-4 w-28"><CharacterIcons character_id={character.id} /></h2>
                                 :
                                 <input type="number" className="w-28 h-5 text-black text-sm font-serif font-md px-2" placeholder="initiative" defaultValue={initiatives ? initiatives[index] : 0}
-                                    onChange={(e) => push_or_update_initiative(index, parseInt(e.target.value))}
+                                    onChange={(e) => push_or_update_initiative_list(index, parseInt(e.target.value))}
                                 />
                             }
 

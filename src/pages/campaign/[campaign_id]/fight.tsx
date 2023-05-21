@@ -36,6 +36,31 @@ const FightPage = () => {
         }
     };
 
+    const set_player_initiatives = async (initiatives: number[]) => {
+        try {
+            for (let i = 0; i < players.length; i++) {
+                await invoke('set_initiative', { characterId: players[i].id, initiative: initiatives[i] });
+            }
+            list_players();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const set_npc_initiatives = async (initiatives: number[]) => {
+        try {
+            for (let i = 0; i < npcs.length; i++) {
+                await invoke('set_initiative', { characterId: npcs[i].id, initiative: initiatives[i] });
+            }
+            list_npcs();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    list_players();
+    list_npcs();
+
     return (
         <main
             className={`bg-gradient-to-b from-dark to-light min-h-screen" px-5 flex flex-col min-h-screen`}
@@ -53,8 +78,8 @@ const FightPage = () => {
             <div className='flex flex-row space-x-2'>
                 <Sidebar campaign_id={campaign_id} campaign_name={campaign_name as string} />
                 <div className="flex flex-row gap-x-10">
-                    <CharacterListFight title="Characters" characters={players} />
-                    <CharacterListFight title="NPCs" characters={npcs} />
+                    <CharacterListFight title="Characters" characters={players} submit_initiatives={set_player_initiatives} />
+                    <CharacterListFight title="NPCs" characters={npcs} submit_initiatives={set_npc_initiatives} />
                 </div>
             </div>
         </main >
