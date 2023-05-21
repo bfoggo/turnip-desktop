@@ -51,7 +51,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-    list_campaigns();
+    list_campaigns().then(() => { }).catch((error) => { console.error(error) });
   }, [])
 
   return (

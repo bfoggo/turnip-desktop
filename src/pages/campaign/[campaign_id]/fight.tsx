@@ -8,11 +8,12 @@ import { Sidebar } from '@/components/sidebar';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { CharacterListFight } from '@/components/character_list';
 import { CharacterData } from '../../../types/character';
+import { list } from 'postcss';
 
 const FightPage = () => {
     const router = useRouter();
-    const { campaign_name, campaign_id_str } = router.query;
-    const campaign_id = parseInt(campaign_id_str as string, 10);
+    const { campaign_name, campaign_id } = router.query;
+    const cid = parseInt(campaign_id as string, 10);
 
     const [players, setPlayers] = useState<CharacterData[]>([])
     const [npcs, setNpcs] = useState<CharacterData[]>([])
@@ -20,7 +21,7 @@ const FightPage = () => {
 
     const list_players = async () => {
         try {
-            const message = await invoke('list_players', { campaignId: campaign_id });
+            const message = await invoke('list_players', { campaignId: cid });
             setPlayers(message as CharacterData[]);
         } catch (error) {
             console.error(error);
@@ -29,7 +30,7 @@ const FightPage = () => {
 
     const list_npcs = async () => {
         try {
-            const message = await invoke('list_npcs', { campaignId: campaign_id });
+            const message = await invoke('list_npcs', { campaignId: cid });
             setNpcs(message as CharacterData[]);
         } catch (error) {
             console.error(error);
@@ -58,8 +59,10 @@ const FightPage = () => {
         }
     };
 
-    list_players();
-    list_npcs();
+    useEffect(() => {
+        list_players();
+        list_npcs();
+    }, []);
 
     return (
         <main
@@ -71,12 +74,12 @@ const FightPage = () => {
                     pathname: '/campaign/[campaign_id]/dashboard',
                     query: {
                         campaign_name: campaign_name as string,
-                        campaign_id: campaign_id
+                        campaign_id: cid
                     }
                 }
             }]} />
             <div className='flex flex-row space-x-2'>
-                <Sidebar campaign_id={campaign_id} campaign_name={campaign_name as string} />
+                <Sidebar campaign_id={cid} campaign_name={campaign_name as string} />
                 <div className="flex flex-row gap-x-10">
                     <CharacterListFight title="Characters" characters={players} submit_initiatives={set_player_initiatives} />
                     <CharacterListFight title="NPCs" characters={npcs} submit_initiatives={set_npc_initiatives} />
