@@ -6,6 +6,7 @@ import { Header } from '../../../components/header';
 import { Sidebar } from '@/components/sidebar';
 import { CharacterListFight } from '@/components/character_list';
 import { CharacterData } from '../../../types/character';
+import { PlayIcon } from '@heroicons/react/24/solid';
 
 const FightPage = () => {
     const router = useRouter();
@@ -83,6 +84,10 @@ const FightPage = () => {
         }
     };
 
+    const take_turn = async () => {
+        {/* do nothing */ }
+    }
+
 
     useEffect(() => {
         list_both().then(() => { }).catch((error) => { console.error(error) });
@@ -112,7 +117,7 @@ const FightPage = () => {
                         kill_character={kill_character} rez_character={rez_character} locked={npcsLocked} unlock_fn={() => setNpcsLocked(false)} />
                 </div>
                 <div className="absolute mx-auto inset-x-0 bottom-10 text-center">
-                    {charactersLocked && npcsLocked ? <h1> Take Turn</h1> : <h1>Waiting for Initiatives...</h1>}
+                    {charactersLocked && npcsLocked ? <button onClick={take_turn}> <PlayIcon className="w-10 h-10 text-primary" /></button> : <h1 className="text-primary">Waiting for Initiatives...</h1>}
                 </div>
             </div>
 
