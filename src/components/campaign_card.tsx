@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { invoke } from "@tauri-apps/api/tauri"
 import { PlusIcon } from "@heroicons/react/24/solid"
 
 interface CampaignProps {
