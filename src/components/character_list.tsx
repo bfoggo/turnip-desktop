@@ -14,7 +14,7 @@ export const CharacterList = (props: CharacterListProps) => {
     const [new_character_name, setNewCharacterName] = useState<string>("New Character")
 
     return (
-        <div className='pt-1 flex flex-col space-y-2 rounded-md pl-2 pr-4 bg-gray-800'>
+        <div className='py-1 flex flex-col space-y-2 rounded-md px-6 bg-gray-800'>
             <h1 className='paragraph-heading'>{props.title}</h1>
             <ul className='ml-8 flex flex-col justify-items-center bg-gray-800 rounded-md border-gray-700  divide-y divide-dotted divide-gray-600'>
                 {props.characters.map((character) => (
