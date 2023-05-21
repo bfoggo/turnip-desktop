@@ -367,8 +367,6 @@ fn sample_from_sorted_initiatives(sorted_initiatives: &Vec<i32>) -> usize {
     let mut index = 0;
     let total: i32 = sorted_initiatives.iter().sum();
     let random_number = rng.gen_range(0..total);
-    println!("random number: {:?}", random_number);
-    println!("sorted initiatives: {:?}", sorted_initiatives);
     while sum < random_number {
         sum += sorted_initiatives[index];
         if sum >= random_number {
