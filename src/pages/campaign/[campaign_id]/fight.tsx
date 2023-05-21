@@ -14,6 +14,8 @@ const FightPage = () => {
 
     const [players, setPlayers] = useState<CharacterData[]>([])
     const [npcs, setNpcs] = useState<CharacterData[]>([])
+    const [charactersLocked, setCharactersLocked] = useState<boolean>(false);
+    const [npcsLocked, setNpcsLocked] = useState<boolean>(false);
 
 
     const list_players = async () => {
@@ -45,6 +47,7 @@ const FightPage = () => {
                 await invoke('set_initiative', { characterId: players[i].id, initiative: initiatives[i] });
             }
             list_players();
+            setCharactersLocked(true);
         } catch (error) {
             console.error(error);
         }
@@ -56,6 +59,7 @@ const FightPage = () => {
                 await invoke('set_initiative', { characterId: npcs[i].id, initiative: initiatives[i] });
             }
             list_npcs();
+            setNpcsLocked(true);
         } catch (error) {
             console.error(error);
         }
@@ -101,8 +105,10 @@ const FightPage = () => {
             <div className='flex flex-row space-x-2'>
                 <Sidebar campaign_id={cid} campaign_name={campaign_name as string} />
                 <div className="flex flex-row gap-x-10">
-                    <CharacterListFight title="Characters" characters={players} submit_initiatives={set_player_initiatives} kill_character={kill_character} rez_character={rez_character} />
-                    <CharacterListFight title="NPCs" characters={npcs} submit_initiatives={set_npc_initiatives} kill_character={kill_character} rez_character={rez_character} />
+                    <CharacterListFight title="Characters" characters={players} submit_initiatives={set_player_initiatives}
+                        kill_character={kill_character} rez_character={rez_character} locked={charactersLocked} unlock_fn={() => setCharactersLocked(false)} />
+                    <CharacterListFight title="NPCs" characters={npcs} submit_initiatives={set_npc_initiatives}
+                        kill_character={kill_character} rez_character={rez_character} locked={npcsLocked} unlock_fn={() => setNpcsLocked(false)} />
                 </div>
             </div>
         </main >

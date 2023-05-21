@@ -40,15 +40,16 @@ export const CharacterList = (props: CharacterListProps) => {
 interface CharacterListFightProps {
     title: string
     characters: CharacterData[]
+    locked: boolean
     submit_initiatives: (initiatives: number[]) => void
     kill_character: (character_id: number) => void
     rez_character: (character_id: number) => void
+    unlock_fn: () => void
 }
 
 export const CharacterListFight = (props: CharacterListFightProps) => {
 
     const [initiatives, setInitiatives] = useState<number[]>();
-    const [locked, setLocked] = useState<boolean>(false);
 
     const set_all_initiatives = async () => {
         try {
@@ -56,7 +57,6 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                 throw new Error("Initiatives not set for all characters")
             }
             props.submit_initiatives(initiatives);
-            setLocked(true);
         }
         catch (error) {
             console.error(error);
@@ -86,7 +86,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                     <li>
                         <div className=' px-4 flex flex-row space-x-2 text-black items-center text-lg font-serif font-md'>
                             <h2 className="w-28">{character.name}</h2>
-                            {locked ?
+                            {props.locked ?
                                 <h2 className="pl-4 w-28">
                                     <CharacterIcons character={character} kill_fn={() => props.kill_character(character.id)} rez_fn={() => props.rez_character(character.id)} /></h2>
                                 :
@@ -99,10 +99,10 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                     </li>
                 ))}
                 <hr className=" w-full mx-4 h-0.5  my-4 bg-light opacity-10 border-0 rounded"></hr>
-                {locked ?
+                {props.locked ?
                     <div className="flex flex-row items-center">
                         <LockClosedIcon className="w-5 h-5 mx-4" />
-                        <button className="mx-4 border border-rounded bg-dark w-28" onClick={() => setLocked(false)}> Unlock</button>
+                        <button className="mx-4 border border-rounded bg-dark w-28" onClick={() => props.unlock_fn}> Unlock</button>
                     </div>
                     :
                     <button className="mx-4 border border-rounded bg-dark w-28" onClick={set_all_initiatives}> Submit</button>
