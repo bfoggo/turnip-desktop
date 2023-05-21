@@ -86,7 +86,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                         <div className=' px-4 flex flex-row space-x-2 text-black items-center text-lg font-serif font-md'>
                             <h2 className="w-28">{character.name}</h2>
                             {locked ?
-                                <h2 className="pl-4 w-28"><CharacterIcons character_id={character.id} /></h2>
+                                <h2 className="pl-4 w-28"><CharacterIcons character={character} /></h2>
                                 :
                                 <input type="number" className="w-28 h-5 text-black text-sm font-serif font-md px-2" placeholder="initiative" defaultValue={initiatives ? initiatives[index] : 0}
                                     onChange={(e) => push_or_update_initiative_list(index, parseInt(e.target.value))}
