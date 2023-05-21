@@ -14,17 +14,17 @@ interface BreadCrumbProps {
 export const Header = (props: BreadCrumbProps) => {
     return (
         <header>
-            <div className="flex flex-col space-y-1">
+            <div className="pl-16 pt-1 flex flex-col space-y-1">
                 <div className="flex flex-row pt-1">
                     <Link href="/">
-                        <h1 className='text-sm text-white font-bold font-mono  hover:text-black'>Turnip</h1>
+                        <h1 className='header-text'>Turnip</h1>
                     </Link> 
                     {
                         props.crumbs.map((crumb) => (
                             <div className="flex flex-row items-center ">
-                                <h1 className='w-4 h-4 text-sm text-black opacity-30 font-bold font-mono'><ChevronRightIcon /></h1>
+                                <h1 className='w-4 h-4 header-text'><ChevronRightIcon /></h1>
                                 <Link href={crumb.href} >
-                                    <h1 className='text-sm text-white font-bold font-mono hover:text-white'>{crumb.name}</h1>
+                                    <h1 className='header-text'>{crumb.name}</h1>
                                 </Link>
                             </div>
                         ))

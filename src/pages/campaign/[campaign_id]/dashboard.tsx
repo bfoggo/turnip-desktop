@@ -72,7 +72,7 @@ const DashboardPage = () => {
 
     return (
         <main
-            className={`bg-gradient-to-b from-black to-white min-h-screen" px-5 flex flex-col min-h-screen`}
+            className={` px-5 flex flex-col min-h-screen`}
         >
             <Header crumbs={[{
                 name: `${campaign_name} : Dashboard`,
