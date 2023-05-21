@@ -102,7 +102,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                 {props.locked ?
                     <div className="flex flex-row items-center">
                         <LockClosedIcon className="w-5 h-5 mx-4" />
-                        <button className="mx-4 border border-rounded bg-dark w-28" onClick={() => props.unlock_fn}> Unlock</button>
+                        <button className="mx-4 border border-rounded bg-dark w-28" onClick={() => props.unlock_fn()}> Unlock</button>
                     </div>
                     :
                     <button className="mx-4 border border-rounded bg-dark w-28" onClick={set_all_initiatives}> Submit</button>

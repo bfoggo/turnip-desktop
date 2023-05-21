@@ -102,6 +102,7 @@ const FightPage = () => {
                     }
                 }
             }]} />
+
             <div className='flex flex-row space-x-2'>
                 <Sidebar campaign_id={cid} campaign_name={campaign_name as string} />
                 <div className="flex flex-row gap-x-10">
@@ -110,7 +111,11 @@ const FightPage = () => {
                     <CharacterListFight title="NPCs" characters={npcs} submit_initiatives={set_npc_initiatives}
                         kill_character={kill_character} rez_character={rez_character} locked={npcsLocked} unlock_fn={() => setNpcsLocked(false)} />
                 </div>
+                <div className="absolute mx-auto inset-x-0 bottom-10 text-center">
+                    {charactersLocked && npcsLocked ? <h1> Take Turn</h1> : <h1>Waiting for Initiatives...</h1>}
+                </div>
             </div>
+
         </main >
     );
 };
