@@ -51,7 +51,7 @@ body {
 }
 
 .card-modal .card-modal-input{
-  @apply text-lg font-sans border-none rounded-md text-turquoise-500 italic placeholder-gray-500 bg-gray-500 focus:outline-none;
+  @apply text-lg font-sans border-none rounded-md text-turquoise-500 italic placeholder-gray-400 bg-gray-500 focus:outline-none;
 }
 
 .icon-normal {
@@ -60,4 +60,16 @@ body {
 
 .icon-danger {
   @apply text-red-600 hover:text-red-400;
+}
+
+.header-text {
+  @apply text-sm font-bold font-mono text-royal-blue-600 hover:text-royal-blue-400;
+}
+
+.sidebar {
+  @apply border border-gray-800 bg-gray-900;
+}
+
+.sidebar .sidebar-text {
+  @apply text-base font-sans text-gray-500 hover:text-turquoise-600;
 }

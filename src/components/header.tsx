@@ -14,7 +14,7 @@ interface BreadCrumbProps {
 export const Header = (props: BreadCrumbProps) => {
     return (
         <header>
-            <div className="pl-16 pt-1 flex flex-col space-y-1">
+            <div className="pl-32 pt-1 flex flex-col space-y-1">
                 <div className="flex flex-row pt-1">
                     <Link href="/">
                         <h1 className='header-text'>Turnip</h1>

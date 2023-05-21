@@ -59,7 +59,7 @@ export default function Home() {
     >
       <Header crumbs={[]} />
 
-      <div className='pl-16 w-full h-full'>
+      <div className='pl-32 pt-10 w-full h-full'>
         <h1 className='paragraph-heading'>Campaigns</h1>
         <div className="pt-2 flex flex-col justify-start w-full">
           <li className="flex flex-col space-y-4 pb-3">
