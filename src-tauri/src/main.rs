@@ -1,5 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use prisma_client_rust::queries::QueryError;
+use rand::Rng;
 
 use std::vec;
 
@@ -23,7 +24,8 @@ fn main() {
             set_initiative,
             get_character_data,
             activate_character,
-            deactivate_character
+            deactivate_character,
+            take_turn
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -111,7 +113,7 @@ async fn delete_campaign(campaign_name: String) -> Result<(), QueryError> {
     Ok(())
 }
 
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, Default, serde::Serialize, serde::Deserialize)]
 struct CampaignId(i32);
 
 type CharacterData = character::Data;
@@ -280,4 +282,99 @@ async fn deactivate_character(character_id: i32) -> Result<(), QueryError> {
         .exec()
         .await?;
     Ok(())
+}
+
+#[tauri::command]
+async fn take_turn(campaign_id: CampaignId) -> Result<String, QueryError> {
+    let client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+    let mut characters = list_all_awaiting_characters(campaign_id).await?;
+    if characters.is_empty() {
+        reset_round(campaign_id).await?;
+        characters = list_all_awaiting_characters(campaign_id).await?;
+    }
+    characters.sort_by(|a, b| {
+        a.initiative
+            .unwrap_or(0)
+            .partial_cmp(&b.initiative.unwrap_or(0))
+            .unwrap()
+    });
+    let initiatives: Vec<i32> = characters
+        .iter()
+        .map(|character| character.initiative.unwrap_or(0))
+        .collect();
+    let index = sample_from_sorted_initiatives(&initiatives);
+    let character_id = characters[index].id;
+    client
+        .character()
+        .update(
+            character::UniqueWhereParam::IdEquals(character_id),
+            vec![character::SetParam::SetTurnAvailable(false)],
+        )
+        .exec()
+        .await?;
+    Ok(characters[index].name.clone())
+}
+
+async fn list_all_awaiting_characters(
+    campaign_id: CampaignId,
+) -> Result<Vec<CharacterData>, QueryError> {
+    let client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+    let characters = client
+        .character()
+        .find_many(vec![
+            character::WhereParam::CampaignId(prisma::read_filters::IntFilter::Equals(
+                campaign_id.0,
+            )),
+            character::WhereParam::IsActive(prisma::read_filters::BoolFilter::Equals(true)),
+            character::WhereParam::TurnAvailable(prisma::read_filters::BoolFilter::Equals(true)),
+        ])
+        .exec()
+        .await?;
+    Ok(characters)
+}
+
+async fn reset_round(campaign_id: CampaignId) -> Result<(), QueryError> {
+    // set all characters to have turn available
+    let client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+    client
+        .character()
+        .update_many(
+            vec![
+                character::WhereParam::CampaignId(prisma::read_filters::IntFilter::Equals(
+                    campaign_id.0,
+                )),
+                character::WhereParam::IsActive(prisma::read_filters::BoolFilter::Equals(true)),
+            ],
+            vec![character::SetParam::SetTurnAvailable(true)],
+        )
+        .exec()
+        .await?;
+    Ok(())
+}
+
+fn sample_from_sorted_initiatives(sorted_initiatives: &Vec<i32>) -> usize {
+    let mut rng = rand::thread_rng();
+    let mut sum = 0;
+    let mut index = 0;
+    let total: i32 = sorted_initiatives.iter().sum();
+    let random_number = rng.gen_range(0..total);
+    println!("random number: {:?}", random_number);
+    println!("sorted initiatives: {:?}", sorted_initiatives);
+    while sum < random_number {
+        sum += sorted_initiatives[index];
+        if sum >= random_number {
+            break;
+        }
+        index += 1;
+    }
+    index
 }

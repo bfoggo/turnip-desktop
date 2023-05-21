@@ -17,6 +17,7 @@ const FightPage = () => {
     const [npcs, setNpcs] = useState<CharacterData[]>([])
     const [charactersLocked, setCharactersLocked] = useState<boolean>(false);
     const [npcsLocked, setNpcsLocked] = useState<boolean>(false);
+    const [whoseTurn, setWhoseTurn] = useState<string>('Nobody');
 
 
     const list_players = async () => {
@@ -85,7 +86,15 @@ const FightPage = () => {
     };
 
     const take_turn = async () => {
-        {/* do nothing */ }
+        try {
+
+            let messsage = await invoke('take_turn', { campaignId: cid });
+            await list_both();
+            setWhoseTurn(messsage as string);
+        }
+        catch (error) {
+            console.error(error);
+        }
     }
 
 
@@ -117,7 +126,12 @@ const FightPage = () => {
                         kill_character={kill_character} rez_character={rez_character} locked={npcsLocked} unlock_fn={() => setNpcsLocked(false)} />
                 </div>
                 <div className="absolute mx-auto inset-x-0 bottom-10 text-center">
-                    {charactersLocked && npcsLocked ? <button onClick={take_turn}> <PlayIcon className="w-10 h-10 text-primary" /></button> : <h1 className="text-primary">Waiting for Initiatives...</h1>}
+                    {charactersLocked && npcsLocked ?
+                        <div>
+                            <button onClick={take_turn}> <PlayIcon className="w-10 h-10 text-primary" /></button>
+                            <h1> It's {whoseTurn}'s turn!</h1>
+                        </div>
+                        : <h1 className="text-primary">Waiting for Initiatives...</h1>}
                 </div>
             </div>
 
