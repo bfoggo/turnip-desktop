@@ -2,6 +2,7 @@ import { PlusIcon, TrashIcon, LockClosedIcon } from '@heroicons/react/24/solid'
 import { useState } from 'react'
 import { CharacterData } from '../types/character'
 import { invoke } from '@tauri-apps/api/tauri'
+import { CharacterIcons } from './character_icons'
 
 interface CharacterListProps {
     title: string
@@ -37,29 +38,29 @@ export const CharacterList = (props: CharacterListProps) => {
     )
 }
 
-export const CharacterListInitiative = (props: CharacterListProps) => {
+interface CharacterListFightProps {
+    title: string
+    characters: CharacterData[]
+}
+
+export const CharacterListFight = (props: CharacterListFightProps) => {
 
     const [initiatives, setInitiatives] = useState<number[]>();
     const [locked, setLocked] = useState<boolean>(false);
 
     const set_all_initiatives = async () => {
         try {
-            console.log(initiatives)
             if (initiatives?.length != props.characters.length) {
                 throw new Error("Initiatives not set for all characters")
             }
             for (let i = 0; i < initiatives.length; i++) {
                 await invoke('set_initiative', { characterId: props.characters[i].id, initiative: initiatives[i] }).then((response) => {
-                    console.log(response)
                 }
                 )
             }
             setLocked(true);
-            console.log(initiatives)
         }
         catch (error) {
-            console.log(props.characters)
-            console.log(initiatives)
             console.error(error);
         }
     }
@@ -88,7 +89,7 @@ export const CharacterListInitiative = (props: CharacterListProps) => {
                         <div className=' px-4 flex flex-row space-x-2 text-black items-center text-lg font-serif font-md'>
                             <h2 className="w-28">{character.name}</h2>
                             {locked ?
-                                <h2 className="pl-4 w-28">{initiatives ? initiatives[index] : 0}</h2>
+                                <h2 className="pl-4 w-28"><CharacterIcons character_id={character.id} /></h2>
                                 :
                                 <input type="number" className="w-28 h-5 text-black text-sm font-serif font-md px-2" placeholder="initiative" defaultValue={initiatives ? initiatives[index] : 0}
                                     onChange={(e) => push_or_update_initiative(index, parseInt(e.target.value))}
