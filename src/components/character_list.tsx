@@ -1,4 +1,4 @@
-import { PlusIcon, TrashIcon, LockClosedIcon } from '@heroicons/react/24/solid'
+import { PlusIcon, TrashIcon, LockClosedIcon, CheckCircleIcon } from '@heroicons/react/24/solid'
 import { useState } from 'react'
 import { CharacterData } from '../types/character'
 import { CharacterIcons } from './character_icons'
@@ -98,14 +98,17 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                         </div>
                     </li>
                 ))}
-                <hr className=" w-full mx-4 h-0.5  my-4 bg-light opacity-10 border-0 rounded"></hr>
+                <hr className=" w-full h-0.5  my-1 bg-light opacity-10 border-0 rounded"></hr>
                 {props.locked ?
-                    <div className="flex flex-row items-center">
-                        <LockClosedIcon className="w-5 h-5 mx-4" />
-                        <button className="mx-4 border border-rounded bg-dark w-28" onClick={() => props.unlock_fn()}> Unlock</button>
+                    <div className="grid justify-items-end w-full">
+                        <button onClick={() => props.unlock_fn()}> <LockClosedIcon className="w-5 h-5 text-danger" /></button>
                     </div>
                     :
-                    <button className="mx-4 border border-rounded bg-dark w-28" onClick={set_all_initiatives}> Submit</button>
+                    <div className="grid w-full justify-items-end">
+                        <div>
+                            <button onClick={set_all_initiatives}> <CheckCircleIcon className="h-5 w-5 text-success" /></button>
+                        </div>
+                    </div>
 
                 }
             </ul>
