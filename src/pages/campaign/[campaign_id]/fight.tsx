@@ -2,13 +2,10 @@ import { useRouter } from 'next/router';
 import { invoke } from '@tauri-apps/api/tauri';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { TrashIcon } from '@heroicons/react/24/solid';
 import { Header } from '../../../components/header';
 import { Sidebar } from '@/components/sidebar';
-import { PlusIcon } from '@heroicons/react/24/solid';
 import { CharacterListFight } from '@/components/character_list';
 import { CharacterData } from '../../../types/character';
-import { list } from 'postcss';
 
 const FightPage = () => {
     const router = useRouter();

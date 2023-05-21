@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useEffect } from 'react'
