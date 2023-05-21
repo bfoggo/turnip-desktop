@@ -11,24 +11,35 @@ import { CharacterData } from '../../../types/character';
 
 const DashboardPage = () => {
     const router = useRouter();
-    const { campaign_name, campaign_id } = router.query;
+    const { campaign_name, campaign_id_str } = router.query;
+    const campaign_id = parseInt(campaign_id_str as string, 10);
 
     const [players, setPlayers] = useState<CharacterData[]>([])
     const [npcs, setNpcs] = useState<CharacterData[]>([])
 
 
-    useEffect(() => {
-        invoke('list_players', { campaignId: parseInt(campaign_id as string, 10) }).then((message) => setPlayers(message as CharacterData[])).catch(console.error)
-    }, [])
-    useEffect(() => {
-        invoke('list_npcs', { campaignId: parseInt(campaign_id as string, 10) }).then((message) => setNpcs(message as CharacterData[])).catch(console.error)
-    }, [])
+    const list_players = async () => {
+        try {
+            const message = await invoke('list_players', { campaignId: campaign_id });
+            setPlayers(message as CharacterData[]);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const list_npcs = async () => {
+        try {
+            const message = await invoke('list_npcs', { campaignId: campaign_id });
+            setNpcs(message as CharacterData[]);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const add_player = async (name: string) => {
         try {
-            await invoke('add_player', { campaignId: parseInt(campaign_id as string, 10), playerName: name });
-            const message = await invoke('list_players', { campaignId: parseInt(campaign_id as string, 10) });
-            setPlayers(message as CharacterData[]);
+            await invoke('add_player', { campaignId: campaign_id, playerName: name });
+            list_players();
         } catch (error) {
             console.error(error);
         }
@@ -36,9 +47,8 @@ const DashboardPage = () => {
 
     const add_npc = async (name: string) => {
         try {
-            await invoke('add_npc', { campaignId: parseInt(campaign_id as string, 10), npcName: name });
-            const message = await invoke('list_npcs', { campaignId: parseInt(campaign_id as string, 10) });
-            setNpcs(message as CharacterData[]);
+            await invoke('add_npc', { campaignId: campaign_id, npcName: name });
+            list_npcs();
         } catch (error) {
             console.error(error);
         }
@@ -46,12 +56,9 @@ const DashboardPage = () => {
 
     const delete_character = async (character_id: number) => {
         try {
-            let cid = parseInt(campaign_id as string, 10);
             await invoke('delete_character', { characterId: character_id });
-            const player_list_message = await invoke('list_players', { campaignId: parseInt(campaign_id as string, 10) });
-            setPlayers(player_list_message as CharacterData[]);
-            const npc_list_message = await invoke('list_npcs', { campaignId: parseInt(campaign_id as string, 10) });
-            setNpcs(npc_list_message as CharacterData[]);
+            list_players();
+            list_npcs();
         } catch (error) {
             console.error(error);
         }
@@ -67,12 +74,12 @@ const DashboardPage = () => {
                     pathname: '/campaign/[campaign_id]/dashboard',
                     query: {
                         campaign_name: campaign_name as string,
-                        campaign_id: campaign_id as string
+                        campaign_id: campaign_id
                     }
                 }
             }]} />
             <div className='flex flex-row space-x-2'>
-                <Sidebar campaign_id={parseInt(campaign_id as string, 10)} campaign_name={campaign_name as string} />
+                <Sidebar campaign_id={campaign_id} campaign_name={campaign_name as string} />
                 <div className="flex flex-row gap-x-32">
                     <CharacterList title="Characters" characters={players} delete_fn={delete_character} add_fn={add_player} />
                     <CharacterList title="NPCs" characters={npcs} delete_fn={delete_character} add_fn={add_npc} />
