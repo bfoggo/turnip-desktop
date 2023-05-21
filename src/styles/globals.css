@@ -8,6 +8,16 @@
   --background-end-color: #09090b;
 }
 
+@layer base {
+        input[type='number']::-webkit-outer-spin-button,
+        input[type='number']::-webkit-inner-spin-button,
+        input[type='number'] {
+          -webkit-appearance: none;
+          margin: 0;
+          -moz-appearance: textfield !important;
+        }
+     }
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-color: #8fcfe9;
@@ -80,4 +90,8 @@ body {
 
 .input-raw {
   @apply text-lg font-sans placeholder-gray-500 placeholder-opacity-50 bg-transparent text-turquoise-400 focus:outline-none;
+}
+
+.input-bordered {
+  @apply text-sm font-sans placeholder-gray-500 placeholder-opacity-50 bg-transparent border-b-2 border-gray-600 rounded-md text-gray-500 focus:outline-none focus:text-gray-400;
 }

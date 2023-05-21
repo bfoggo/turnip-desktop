@@ -104,10 +104,10 @@ const FightPage = () => {
 
     return (
         <main
-            className={`bg-gradient-to-b from-black to-white min-h-screen" px-5 flex flex-col min-h-screen`}
+            className={`px-5 flex flex-col min-h-screen`}
         >
             <Header crumbs={[{
-                name: `${campaign_name} : Fight`,
+                name: `${campaign_name}: Fight`,
                 href: {
                     pathname: '/campaign/[campaign_id]/fight',
                     query: {
@@ -117,9 +117,9 @@ const FightPage = () => {
                 }
             }]} />
 
-            <div className='flex flex-row space-x-2'>
+            <div className='pl-32 pt-1 flex flex-row'>
                 <Sidebar campaign_id={cid} campaign_name={campaign_name as string} />
-                <div className="flex flex-row gap-x-10">
+                <div className="flex flex-row w-full justify-between">
                     <CharacterListFight title="Characters" characters={players} submit_initiatives={set_player_initiatives}
                         kill_character={kill_character} rez_character={rez_character} locked={charactersLocked} unlock_fn={() => setCharactersLocked(false)} />
                     <CharacterListFight title="NPCs" characters={npcs} submit_initiatives={set_npc_initiatives}

@@ -75,7 +75,7 @@ const DashboardPage = () => {
             className={`px-5 flex flex-col min-h-screen`}
         >
             <Header crumbs={[{
-                name: `${campaign_name}:Dashboard`,
+                name: `${campaign_name}: Dashboard`,
                 href: {
                     pathname: '/campaign/[campaign_id]/dashboard',
                     query: {

@@ -54,14 +54,36 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
 
     const set_all_initiatives = async () => {
         try {
-            if (initiatives?.length != props.characters.length) {
+            if (check_for_nan_initiatives() || !check_initiative_match()) {
                 throw new Error("Initiatives not set for all characters")
             }
-            props.submit_initiatives(initiatives);
+            props.submit_initiatives(initiatives as number[]);
         }
         catch (error) {
             console.error(error);
         }
+    }
+
+    const check_for_nan_initiatives = () => {
+        if (!initiatives) {
+            return true;
+        }
+        for (let initiative of initiatives) {
+            if (isNaN(initiative)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    const check_initiative_match = () => {
+        if (!initiatives) {
+            return false;
+        }
+        if (initiatives) {
+            return initiatives.length == props.characters.length;
+        }
+        return false;
     }
 
     const push_or_update_initiative_list = (index: number, new_value: number) => {
@@ -71,6 +93,9 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
         }
         if (initiatives) {
             initiatives.push(new_value);
+            if (!initiatives) {
+            return true;
+        }
             return;
         }
         else {
@@ -80,18 +105,18 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
     }
 
     return (
-        <div className='flex flex-col space-y-1'>
-            <h1 className='text-2xl font-serif text-white'>{props.title}</h1>
-            <ul >
+        <div className='py-1 flex flex-col space-y-2 rounded-md px-6 bg-gray-800'>
+            <h1 className='paragraph-heading'>{props.title}</h1>
+            <ul className='ml-8 flex flex-col justify-items-center bg-gray-800 rounded-md border-gray-700  divide-y divide-dotted divide-gray-600'>
                 {props.characters.map((character, index) => (
                     <li>
-                        <div className=' px-4 flex flex-row space-x-2 text-black items-center text-lg font-serif font-md'>
-                            <h2 className="w-28">{character.name}</h2>
+                        <div className=' py-1 flex flex-row items-center raw-text'>
+                            <p className="w-60">{character.name}</p>
                             {props.locked ?
-                                <h2 className="pl-4 w-28">
-                                    <CharacterIcons character={character} kill_fn={() => props.kill_character(character.id)} rez_fn={() => props.rez_character(character.id)} /></h2>
+                                <p className="pl-4 w-5">
+                                    <CharacterIcons character={character} kill_fn={() => props.kill_character(character.id)} rez_fn={() => props.rez_character(character.id)} /></p>
                                 :
-                                <input type="number" className="w-28 h-5 text-black text-sm font-serif font-md px-2" placeholder="initiative" defaultValue={initiatives ? initiatives[index] : "initiative"}
+                                <input type="number" className="w-5 h-5 text-center input-bordered" defaultValue={initiatives ? initiatives[index] : ""}
                                     onChange={(e) => push_or_update_initiative_list(index, parseInt(e.target.value))}
                                 />
                             }
@@ -99,20 +124,22 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                         </div>
                     </li>
                 ))}
-                <hr className=" w-full h-0.5  my-1 bg-white opacity-10 border-0 rounded"></hr>
                 {props.locked ?
-                    <div className="grid justify-items-end w-full">
+                    <div className="grid pt-1 items-center justify-items-start w-full">
                         <button onClick={() => props.unlock_fn()}> <LockClosedIcon className="w-5 h-5 text-red" /></button>
                     </div>
                     :
-                    <div className="grid w-full justify-items-end">
+                    <div className="grid pt-2 w-full items-center justify-items-start">
                         <div>
-                            <button onClick={set_all_initiatives}> <CheckCircleIcon className="h-5 w-5 text-green" /></button>
+                            <button onClick={set_all_initiatives}>
+                                {check_initiative_match() && !check_for_nan_initiatives() ? <CheckCircleIcon className="h-5 w-5 icon-normal" /> : <CheckCircleIcon className="h-5 w-5 icon-danger" />}
+                            </button>
                         </div>
                     </div>
 
                 }
             </ul>
+
         </div>
     )
 }
