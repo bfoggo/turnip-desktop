@@ -1,4 +1,4 @@
-import { PlusIcon, TrashIcon, LockClosedIcon, CheckCircleIcon } from '@heroicons/react/24/solid'
+import { PlusIcon, TrashIcon, LockClosedIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
 import { CharacterData } from '../types/character'
 import { CharacterIcons } from './character_icons'
@@ -14,25 +14,26 @@ export const CharacterList = (props: CharacterListProps) => {
     const [new_character_name, setNewCharacterName] = useState<string>("New Character")
 
     return (
-        <div className='flex flex-col space-y-1'>
-            <h1 className='text-2xl font-serif text-white'>{props.title}</h1>
-            <ul >
+        <div className='pt-1 flex flex-col space-y-2 rounded-md pl-2 pr-4 bg-gray-800'>
+            <h1 className='paragraph-heading'>{props.title}</h1>
+            <ul className='ml-8 flex flex-col justify-items-center bg-gray-800 rounded-md border-gray-700  divide-y divide-dotted divide-gray-600'>
                 {props.characters.map((character) => (
                     <li>
-                        <div className=' px-4 flex flex-row space-x-2 text-black text-lg font-serif font-md'>
-                            <h2 className="w-28">{character.name}</h2>
-                            <button onClick={() => props.delete_fn(character.id)}><TrashIcon className="h-4 w-4 text-white" /></button>
+                        <div className='py-1 flex flex-row items-center raw-text '>
+                            <p className="w-60">{character.name}</p>
+                            <button onClick={() => props.delete_fn(character.id)}><TrashIcon className="h-4 w-4 icon-danger" /></button>
                         </div>
                     </li>
                 ))}
+                <div className="flex flex-row py-1 items-center">
+                    <input className="w-60 input-raw"
+                        type='text' placeholder='New' onChange={(e) => setNewCharacterName(e.target.value)}
+                    />
+                    <button onClick={() => props.add_fn(new_character_name)}
+                    ><PlusIcon className="w-5 h-5 icon-normal"></PlusIcon></button>
+                </div>
             </ul>
-            <div className="px-2 flex flex-row space-x-4 text-black text-lg font-serif font-md">
-                <input className="w-28 rounded-lg bg-opacity-100 text-black text-lg font-serif font-md px-2"
-                    type='text' placeholder='New' onChange={(e) => setNewCharacterName(e.target.value)}
-                />
-                <button onClick={() => props.add_fn(new_character_name)}
-                ><PlusIcon className="w-5 h-5"></PlusIcon></button>
-            </div>
+
         </div>
     )
 }
