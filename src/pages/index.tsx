@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { TrashIcon, PlusIcon } from '@heroicons/react/24/solid'
+import { TrashIcon } from '@heroicons/react/24/outline'
 import { CampaignCard, NewCampaignCard, NewCampaignModal } from '../components/campaign_card'
 import Modal from "react-modal";
 import Link from 'next/link'
@@ -22,19 +22,20 @@ export default function Home() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
   const [showNewCampaignModal, setShowNewCampaignModal] = useState<boolean>(false)
 
-  useEffect(() => {
-    invoke('upsert_character_type_enum').then(console.log).catch(console.error);
-  }, [])
 
-  useEffect(() => {
-    invoke('list_campaigns').then((message: any) => { setCampaigns(message as Campaign[]) }).catch(console.error);
-  }, [])
+  const list_campaigns = async () => {
+    try {
+      const message = await invoke('list_campaigns');
+      setCampaigns(message as Campaign[]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const addCampaign = async (name: string) => {
     try {
       await invoke('add_campaign', { campaignName: name });
-      const message = await invoke('list_campaigns');
-      setCampaigns(message as Campaign[]);
+      await list_campaigns();
     } catch (error) {
       console.error(error);
     }
@@ -43,12 +44,15 @@ export default function Home() {
   const deleteCampaign = async (name: string) => {
     try {
       await invoke('delete_campaign', { campaignName: name });
-      const message = await invoke('list_campaigns');
-      setCampaigns(message as Campaign[]);
+      await list_campaigns();
     } catch (error) {
       console.error(error);
     }
   }
+
+  useEffect(() => {
+    list_campaigns();
+  }, [])
 
   return (
     <div className="bg-gradient-to-b from-dark to-light min-h-screen"
