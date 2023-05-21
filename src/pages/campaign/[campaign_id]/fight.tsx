@@ -34,6 +34,11 @@ const FightPage = () => {
         }
     };
 
+    const list_both = async () => {
+        await list_players();
+        await list_npcs();
+    }
+
     const set_player_initiatives = async (initiatives: number[]) => {
         try {
             for (let i = 0; i < players.length; i++) {
@@ -56,9 +61,27 @@ const FightPage = () => {
         }
     };
 
+    const kill_character = async (character_id: number) => {
+        try {
+            await invoke('deactivate_character', { characterId: character_id });
+            await list_both();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const rez_character = async (character_id: number) => {
+        try {
+            await invoke('activate_character', { characterId: character_id });
+            await list_both();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
     useEffect(() => {
-        list_players();
-        list_npcs();
+        list_both().then(() => { }).catch((error) => { console.error(error) });
     }, []);
 
     return (
@@ -78,8 +101,8 @@ const FightPage = () => {
             <div className='flex flex-row space-x-2'>
                 <Sidebar campaign_id={cid} campaign_name={campaign_name as string} />
                 <div className="flex flex-row gap-x-10">
-                    <CharacterListFight title="Characters" characters={players} submit_initiatives={set_player_initiatives} />
-                    <CharacterListFight title="NPCs" characters={npcs} submit_initiatives={set_npc_initiatives} />
+                    <CharacterListFight title="Characters" characters={players} submit_initiatives={set_player_initiatives} kill_character={kill_character} rez_character={rez_character} />
+                    <CharacterListFight title="NPCs" characters={npcs} submit_initiatives={set_npc_initiatives} kill_character={kill_character} rez_character={rez_character} />
                 </div>
             </div>
         </main >

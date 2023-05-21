@@ -1,7 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use prisma_client_rust::queries::QueryError;
 
-use std::{fmt::Display, vec};
+use std::vec;
 
 #[allow(warnings, unused)]
 mod prisma;
@@ -21,7 +21,9 @@ fn main() {
             add_npc,
             delete_character,
             set_initiative,
-            get_character_data
+            get_character_data,
+            activate_character,
+            deactivate_character
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -242,4 +244,40 @@ async fn get_character_data(character_id: i32) -> Result<CharacterData, QueryErr
         .await?
         .unwrap();
     Ok(character)
+}
+
+#[tauri::command]
+async fn activate_character(character_id: i32) -> Result<(), QueryError> {
+    let client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+
+    client
+        .character()
+        .update(
+            character::UniqueWhereParam::IdEquals(character_id),
+            vec![character::SetParam::SetIsActive(true)],
+        )
+        .exec()
+        .await?;
+    Ok(())
+}
+
+#[tauri::command]
+async fn deactivate_character(character_id: i32) -> Result<(), QueryError> {
+    let client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+
+    client
+        .character()
+        .update(
+            character::UniqueWhereParam::IdEquals(character_id),
+            vec![character::SetParam::SetIsActive(false)],
+        )
+        .exec()
+        .await?;
+    Ok(())
 }

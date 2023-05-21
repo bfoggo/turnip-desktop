@@ -1,19 +1,28 @@
 import { CharacterData } from '../types/character';
-import { PowerIcon } from '@heroicons/react/24/solid';
+import { HeartIcon, CheckIcon } from '@heroicons/react/24/solid';
 import { invoke } from '@tauri-apps/api/tauri';
 import { useEffect, useState } from 'react';
 
 interface CharacterIconsProps {
     character: CharacterData
+    kill_fn: () => void
+    rez_fn: () => void
 }
 
 export const CharacterIcons = (props: CharacterIconsProps) => {
 
     return (
         <div className="flex flex-row items-center space-x-2">
-            <h1>{props.character.name} </h1>
-            <h1>{props.character.initiative}</h1>
-            {props.character.isActive ? <PowerIcon className="w-5 h-5 text-success" /> : <PowerIcon className="w-5 h-5 text-danger" />}
-        </div>
+            <h1 className="text-sm">{props.character.initiative}</h1>
+            {props.character.isActive ?
+                <button onClick={props.kill_fn}>
+                    <HeartIcon className="w-3 h-3 text-success" /> </button>
+                :
+                <button onClick={props.rez_fn}>
+                    <HeartIcon className="w-3 h-3 text-danger" />
+                </button>
+            }
+            {props.character.isActive && !props.character.turnAvailable ? <CheckIcon className="w-3 h-3 text-success" /> : <></>}
+        </div >
     )
 }
