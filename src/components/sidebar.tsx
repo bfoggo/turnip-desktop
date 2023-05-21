@@ -10,8 +10,8 @@ export const Sidebar = (props: SidebarProps) => {
 
     return (
         <aside className='-ml-5 w-1/5 h-screen'>
-            <div className='h-full flex flex-col items-center space-y-2 bg-gradient-to-b from-primary to-light'>
-                <ul className='text-md font-serif  text-dark text-opacity-50 pt-2 pr-1'>
+            <div className='h-full flex flex-col items-center space-y-2 bg-gradient-to-b from-black to-white'>
+                <ul className='text-md font-serif  text-white text-opacity-50 pt-2 pr-1'>
                     <li>
                         <CampaignLinkedTitle campaign_name={props.campaign_name} campaign_id={props.campaign_id} title='Dashboard' icon="IdentificationIcon" />
                         <CampaignLinkedTitle campaign_name={props.campaign_name} campaign_id={props.campaign_id} title='Fight' icon="FaceFrownIcon" />

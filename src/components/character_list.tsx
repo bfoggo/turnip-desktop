@@ -15,13 +15,13 @@ export const CharacterList = (props: CharacterListProps) => {
 
     return (
         <div className='flex flex-col space-y-1'>
-            <h1 className='text-2xl font-serif text-light'>{props.title}</h1>
+            <h1 className='text-2xl font-serif text-white'>{props.title}</h1>
             <ul >
                 {props.characters.map((character) => (
                     <li>
                         <div className=' px-4 flex flex-row space-x-2 text-black text-lg font-serif font-md'>
                             <h2 className="w-28">{character.name}</h2>
-                            <button onClick={() => props.delete_fn(character.id)}><TrashIcon className="h-4 w-4 text-[#905468]" /></button>
+                            <button onClick={() => props.delete_fn(character.id)}><TrashIcon className="h-4 w-4 text-white" /></button>
                         </div>
                     </li>
                 ))}
@@ -80,7 +80,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
 
     return (
         <div className='flex flex-col space-y-1'>
-            <h1 className='text-2xl font-serif text-light'>{props.title}</h1>
+            <h1 className='text-2xl font-serif text-white'>{props.title}</h1>
             <ul >
                 {props.characters.map((character, index) => (
                     <li>
@@ -98,15 +98,15 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                         </div>
                     </li>
                 ))}
-                <hr className=" w-full h-0.5  my-1 bg-light opacity-10 border-0 rounded"></hr>
+                <hr className=" w-full h-0.5  my-1 bg-white opacity-10 border-0 rounded"></hr>
                 {props.locked ?
                     <div className="grid justify-items-end w-full">
-                        <button onClick={() => props.unlock_fn()}> <LockClosedIcon className="w-5 h-5 text-danger" /></button>
+                        <button onClick={() => props.unlock_fn()}> <LockClosedIcon className="w-5 h-5 text-red" /></button>
                     </div>
                     :
                     <div className="grid w-full justify-items-end">
                         <div>
-                            <button onClick={set_all_initiatives}> <CheckCircleIcon className="h-5 w-5 text-success" /></button>
+                            <button onClick={set_all_initiatives}> <CheckCircleIcon className="h-5 w-5 text-green" /></button>
                         </div>
                     </div>
 

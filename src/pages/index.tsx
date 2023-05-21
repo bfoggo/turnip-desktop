@@ -54,60 +54,58 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="bg-gradient-to-b from-dark to-light min-h-screen"
+    <main
+      className={`px-5 flex flex-col min-h-screen space-y-4 ${inter.className}`}
     >
-      <main
-        className={`px-5 flex flex-col min-h-screen space-y-3 ${inter.className}`}
-      >
-        <Header crumbs={[]} />
+      <Header crumbs={[]} />
 
-        <div className='pl-2 w-full h-full'>
-          <h1 className='text-2xl font-serif text-light'>Campaigns</h1>
-          <div className="-ml-2 pt-2 flex flex-col justify-start w-full">
-            <li className="flex flex-col space-y-1 pb-3">
-              {campaigns.map((campaign) => (
-                <div className="flex flex-row space-x-2 w-3/4">
-                  <Link className="px-2 w-full" href={{
-                    pathname: '/campaign/[campaign_id]/dashboard', query: {
-                      campaign_name: campaign.name,
-                      campaign_id: campaign.id
-                    }
-                  }}
-                  > <CampaignCard campaign={{ campaign_name: campaign.name }} /> </Link>
-                  <button
-                    onClick={() => deleteCampaign(campaign.name)}>
-                    <TrashIcon className="h-5 w-5 text-danger hover:text-more-danger
+      <div className='pl-16 w-full h-full'>
+        <h1 className='paragraph-heading'>Campaigns</h1>
+        <div className="pt-2 flex flex-col justify-start w-full">
+          <li className="flex flex-col space-y-4 pb-3">
+            {campaigns.map((campaign) => (
+              <div className="flex flex-row space-x-2 w-3/4">
+                <Link className="w-full" href={{
+                  pathname: '/campaign/[campaign_id]/dashboard', query: {
+                    campaign_name: campaign.name,
+                    campaign_id: campaign.id
+                  }
+                }}
+                > <CampaignCard campaign={{ campaign_name: campaign.name }} /> </Link>
+                <button
+                  onClick={() => deleteCampaign(campaign.name)}>
+                  <TrashIcon className="h-5 w-5 icon-danger
                   " />
-                  </button>
-                </div>
-              ))}
-              <div className=' flex flex-row space-x-2 w-3/4'>
-                <button className='w-full pr-7' onClick={() => setShowNewCampaignModal(true)}>
-                  <div className="px-2 w-full">
-                    <NewCampaignCard />
-                  </div>
                 </button>
               </div>
-              <Modal isOpen={showNewCampaignModal} onRequestClose={() => setShowNewCampaignModal(false)} style={{
-                overlay: {
-                  backgroundColor: 'rgba(0,0,0,0.3)'
-                },
-                content: {
-                  top: '50%',
-                  left: '50%',
-                  right: 'auto',
-                  bottom: 'auto',
-                  transform: 'translate(-50%, -50%)',
-                  backgroundColor: 'rgba(0,0,0,0.0)',
-                  border: 'none'
-                }
-              }}>
-                <NewCampaignModal add_campaign={(name: string) => addCampaign(name).then(() => setShowNewCampaignModal(false))} />
-              </Modal>
-            </li>
-          </div >
-        </div>
-      </main >
-    </div >
+            ))}
+            <div className=' flex flex-row space-x-2 w-3/4'>
+              <button className='w-full pr-7' onClick={() => setShowNewCampaignModal(true)}>
+                <div className="w-full">
+                  <NewCampaignCard />
+                </div>
+              </button>
+            </div>
+            <Modal isOpen={showNewCampaignModal} onRequestClose={() => setShowNewCampaignModal(false)} style={{
+              overlay: {
+                backdropFilter: 'blur(20px)',
+                backgroundColor: 'rgba(0,0,0,0.5)'
+              },
+              content: {
+                top: '50%',
+                left: '50%',
+                right: 'auto',
+                bottom: 'auto',
+                transform: 'translate(-50%, -50%)',
+                backgroundColor: 'rgba(255,255,255,0)',
+                border: 'none',
+              }
+            }}>
+              <NewCampaignModal add_campaign={(name: string) => addCampaign(name).then(() => setShowNewCampaignModal(false))} />
+            </Modal>
+          </li>
+        </div >
+      </div>
+    </main >
   )
 }
