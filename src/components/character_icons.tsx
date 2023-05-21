@@ -13,7 +13,7 @@ export const CharacterIcons = (props: CharacterIconsProps) => {
 
     return (
         <div className="flex flex-row items-center space-x-2">
-            <h1 className="text-sm">{props.character.initiative}</h1>
+            <h1 className="text-sm w-5">{props.character.initiative}</h1>
             {props.character.isActive ?
                 <button onClick={props.kill_fn}>
                     <HeartIcon className="w-3 h-3 text-success" /> </button>

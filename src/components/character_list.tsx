@@ -90,7 +90,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                                 <h2 className="pl-4 w-28">
                                     <CharacterIcons character={character} kill_fn={() => props.kill_character(character.id)} rez_fn={() => props.rez_character(character.id)} /></h2>
                                 :
-                                <input type="number" className="w-28 h-5 text-black text-sm font-serif font-md px-2" placeholder="initiative" defaultValue={initiatives ? initiatives[index] : 0}
+                                <input type="number" className="w-28 h-5 text-black text-sm font-serif font-md px-2" placeholder="initiative" defaultValue={initiatives ? initiatives[index] : "initiative"}
                                     onChange={(e) => push_or_update_initiative_list(index, parseInt(e.target.value))}
                                 />
                             }
