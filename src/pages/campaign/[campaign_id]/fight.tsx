@@ -98,9 +98,9 @@ const FightPage = () => {
             className={`bg-gradient-to-b from-dark to-light min-h-screen" px-5 flex flex-col min-h-screen`}
         >
             <Header crumbs={[{
-                name: `${campaign_name} : Dashboard`,
+                name: `${campaign_name} : Fight`,
                 href: {
-                    pathname: '/campaign/[campaign_id]/dashboard',
+                    pathname: '/campaign/[campaign_id]/fight',
                     query: {
                         campaign_name: campaign_name as string,
                         campaign_id: cid
