@@ -15,14 +15,15 @@ export const CharacterList = (props: CharacterListProps) => {
     const [new_character_name, setNewCharacterName] = useState<string>("New Character")
 
     return (
-        <div className='py-1 flex flex-col space-y-2 rounded-md px-6 bg-gray-800'>
+        <div className='py-1 flex flex-col space-y-2 px-6 card-raw'>
             <h1 className='paragraph-heading'>{props.title}</h1>
             <ul className='ml-8 flex flex-col justify-items-center bg-gray-800 rounded-md border-gray-700  divide-y divide-dotted divide-gray-600'>
                 {props.characters.map((character) => (
                     <li>
                         <div className='py-1 flex flex-row items-center raw-text '>
                             <p className="w-48">{character.name}</p>
-                            <button onClick={() => props.delete_fn(character.id)}><TrashIcon className="h-4 w-4 icon-danger" /></button>
+                            <button onClick={() => props.delete_fn(character.id)}><div className="w-11">
+                                <TrashIcon className="h-4 w-4 icon-danger" /></div></button>
                         </div>
                     </li>
                 ))}
@@ -31,7 +32,7 @@ export const CharacterList = (props: CharacterListProps) => {
                         type='text' placeholder='New' onChange={(e) => setNewCharacterName(e.target.value)}
                     />
                     <button onClick={() => props.add_fn(new_character_name)}
-                    ><PlusIcon className="w-5 h-5 icon-normal"></PlusIcon></button>
+                    ><div className="w-11"><PlusIcon className="w-5 h-5 icon-normal" /></div></button>
                 </div>
             </ul>
 

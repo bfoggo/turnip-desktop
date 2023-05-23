@@ -86,7 +86,7 @@ const DashboardPage = () => {
             }]} />
             <div className='pl-32 pt-1 flex flex-row'>
                 <Sidebar campaign_id={cid} campaign_name={campaign_name as string} />
-                <div className="flex flex-row w-full justify-between">
+                <div className="flex flex-row w-full justify-between gap-1">
                     <CharacterList title="Characters" characters={players} delete_fn={delete_character} add_fn={add_player} />
                     <CharacterList title="NPCs" characters={npcs} delete_fn={delete_character} add_fn={add_npc} />
                 </div>

@@ -110,7 +110,7 @@ const FightPage = () => {
 
 
     useEffect(() => {
-        list_both().then(() => { }).catch((error) => { console.error(error) });
+        new_round().then(list_both).then(() => { }).catch((error) => { console.error(error) });
     }, []);
 
     return (
