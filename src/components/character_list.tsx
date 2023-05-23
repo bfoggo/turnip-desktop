@@ -95,10 +95,9 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                         <div className=' py-1 flex flex-row items-center raw-text'>
                             <p className="w-48">{character.name}</p>
                             {props.locked ?
-                                <p className="pl-4 w-5">
-                                    <CharacterIcons character={character} kill_fn={() => props.kill_character(character.id)} rez_fn={() => props.rez_character(character.id)} /></p>
+                                <CharacterIcons character={character} kill_fn={() => props.kill_character(character.id)} rez_fn={() => props.rez_character(character.id)} />
                                 :
-                                <input type="number" className="w-5 h-5 text-center input-bordered" defaultValue={initiatives.get(character.id) ? initiatives.get(character.id) : ""}
+                                <input type="number" className="w-11 h-5 text-center input-bordered" defaultValue={initiatives.get(character.id) ? initiatives.get(character.id) : ""}
                                     onChange={(e) => update_initiative_list(character.id, parseInt(e.target.value))}
                                 />
                             }
@@ -107,7 +106,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                 ))}
                 {props.locked ?
                     <div className="grid pt-1 items-center justify-items-start w-full">
-                        <button onClick={() => props.unlock_fn()}> <LockClosedIcon className="w-5 h-5 text-red" /></button>
+                        <button onClick={() => props.unlock_fn()}> <LockClosedIcon className="w-5 h-8 text-gray-400" /></button>
                     </div>
                     :
                     <div className="grid pt-2 w-full items-center justify-items-start">

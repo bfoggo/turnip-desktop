@@ -119,7 +119,7 @@ const FightPage = () => {
 
             <div className='pl-32 pt-1 flex flex-row'>
                 <Sidebar campaign_id={cid} campaign_name={campaign_name as string} />
-                <div className="flex flex-row w-full justify-between">
+                <div className="flex flex-row w-full justify-between gap-1">
                     <CharacterListFight title="Characters" characters={players} submit_initiatives={set_player_initiatives}
                         kill_character={kill_character} rez_character={rez_character} locked={charactersLocked} unlock_fn={() => setCharactersLocked(false)} />
                     <CharacterListFight title="NPCs" characters={npcs} submit_initiatives={set_npc_initiatives}
