@@ -81,7 +81,9 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
     }
 
     const update_initiative_list = (index: number, new_value: number) => {
-        initiatives.set(index, new_value);
+        let new_initiatives = new Map<number, number>(initiatives);
+        new_initiatives.set(index, new_value);
+        setInitiatives(new_initiatives);
     }
 
     return (
@@ -100,7 +102,6 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                                     onChange={(e) => update_initiative_list(character.id, parseInt(e.target.value))}
                                 />
                             }
-
                         </div>
                     </li>
                 ))}
@@ -111,15 +112,16 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                     :
                     <div className="grid pt-2 w-full items-center justify-items-start">
                         <div>
-                            <button onClick={set_all_initiatives}>
-                                {!check_for_missing_initiatives() ? <CheckCircleIcon className="h-5 w-5 icon-normal" /> : <CheckCircleIcon className="h-5 w-5 icon-danger" />}
-                            </button>
+                            {!check_for_missing_initiatives() ?
+                                <button onClick={set_all_initiatives}><CheckCircleIcon className="h-5 w-5 icon-normal" /> </button> :
+                                <button onClick={set_all_initiatives}><CheckCircleIcon className="h-5 w-5 icon-danger" /></button>
+                            }
                         </div>
                     </div>
 
                 }
-            </ul>
+            </ul >
 
-        </div>
+        </div >
     )
 }
