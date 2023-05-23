@@ -43,10 +43,10 @@ const FightPage = () => {
         await list_npcs();
     }
 
-    const set_player_initiatives = async (initiatives: number[]) => {
+    const set_player_initiatives = async (initiatives: Map<number, number>) => {
         try {
-            for (let i = 0; i < players.length; i++) {
-                await invoke('set_initiative', { characterId: players[i].id, initiative: initiatives[i] });
+            for (let pid of initiatives.keys()) {
+                await invoke('set_initiative', { characterId: pid, initiative: initiatives.get(pid) });
             }
             list_players();
             setCharactersLocked(true);
@@ -55,10 +55,10 @@ const FightPage = () => {
         }
     };
 
-    const set_npc_initiatives = async (initiatives: number[]) => {
+    const set_npc_initiatives = async (initiatives: Map<number, number>) => {
         try {
-            for (let i = 0; i < npcs.length; i++) {
-                await invoke('set_initiative', { characterId: npcs[i].id, initiative: initiatives[i] });
+            for (let npcid of initiatives.keys()) {
+                await invoke('set_initiative', { characterId: npcid, initiative: initiatives.get(npcid) });
             }
             list_npcs();
             setNpcsLocked(true);
