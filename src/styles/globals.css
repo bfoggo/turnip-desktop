@@ -64,6 +64,10 @@ body {
   @apply text-lg font-sans border-none rounded-md text-turquoise-500 italic placeholder-gray-400 bg-gray-500 focus:outline-none;
 }
 
+.card-raw {
+  @apply  bg-gray-800 rounded-md border-gray-700  divide-y divide-dotted divide-gray-600;
+}
+
 .icon-normal {
   @apply text-green-300 hover:text-green-600;
 }
@@ -86,6 +90,10 @@ body {
 
 .raw-text {
   @apply text-lg font-serif text-turquoise-600;
+}
+
+.raw-text-danger{
+  @apply text-lg font-serif text-red-300;
 }
 
 .input-raw {

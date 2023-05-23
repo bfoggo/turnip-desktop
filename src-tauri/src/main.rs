@@ -25,7 +25,8 @@ fn main() {
             get_character_data,
             activate_character,
             deactivate_character,
-            take_turn
+            take_turn,
+            reset_round
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -285,15 +286,14 @@ async fn deactivate_character(character_id: i32) -> Result<(), QueryError> {
 }
 
 #[tauri::command]
-async fn take_turn(campaign_id: CampaignId) -> Result<String, QueryError> {
+async fn take_turn(campaign_id: CampaignId) -> Result<Option<String>, QueryError> {
     let client = PrismaClient::_builder()
         .build()
         .await
         .expect("Failed to construct Prisma Client.");
     let mut characters = list_all_awaiting_characters(campaign_id).await?;
     if characters.is_empty() {
-        reset_round(campaign_id).await?;
-        characters = list_all_awaiting_characters(campaign_id).await?;
+        return Ok(None);
     }
     characters.sort_by(|a, b| {
         a.initiative
@@ -315,7 +315,7 @@ async fn take_turn(campaign_id: CampaignId) -> Result<String, QueryError> {
         )
         .exec()
         .await?;
-    Ok(characters[index].name.clone())
+    Ok(Some(characters[index].name.clone()))
 }
 
 async fn list_all_awaiting_characters(
@@ -339,6 +339,7 @@ async fn list_all_awaiting_characters(
     Ok(characters)
 }
 
+#[tauri::command]
 async fn reset_round(campaign_id: CampaignId) -> Result<(), QueryError> {
     // set all characters to have turn available
     let client = PrismaClient::_builder()

@@ -6,7 +6,7 @@ import { Header } from '../../../components/header';
 import { Sidebar } from '@/components/sidebar';
 import { CharacterListFight } from '@/components/character_list';
 import { CharacterData } from '../../../types/character';
-import { PlayIcon } from '@heroicons/react/24/solid';
+import { PlayIcon, ArrowPathIcon } from '@heroicons/react/24/solid';
 
 const FightPage = () => {
     const router = useRouter();
@@ -17,7 +17,7 @@ const FightPage = () => {
     const [npcs, setNpcs] = useState<CharacterData[]>([])
     const [charactersLocked, setCharactersLocked] = useState<boolean>(false);
     const [npcsLocked, setNpcsLocked] = useState<boolean>(false);
-    const [whoseTurn, setWhoseTurn] = useState<string>('Nobody');
+    const [whoseTurn, setWhoseTurn] = useState<string | null>(null);
 
 
     const list_players = async () => {
@@ -97,6 +97,17 @@ const FightPage = () => {
         }
     }
 
+    const new_round = async () => {
+        try {
+            await invoke('reset_round', { campaignId: cid });
+            await list_both();
+            setWhoseTurn('Nobody');
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
 
     useEffect(() => {
         list_both().then(() => { }).catch((error) => { console.error(error) });
@@ -116,25 +127,34 @@ const FightPage = () => {
                     }
                 }
             }]} />
-
             <div className='pl-32 pt-1 flex flex-row'>
                 <Sidebar campaign_id={cid} campaign_name={campaign_name as string} />
-                <div className="flex flex-row w-full justify-between gap-1">
-                    <CharacterListFight title="Characters" characters={players} submit_initiatives={set_player_initiatives}
-                        kill_character={kill_character} rez_character={rez_character} locked={charactersLocked} unlock_fn={() => setCharactersLocked(false)} />
-                    <CharacterListFight title="NPCs" characters={npcs} submit_initiatives={set_npc_initiatives}
-                        kill_character={kill_character} rez_character={rez_character} locked={npcsLocked} unlock_fn={() => setNpcsLocked(false)} />
-                </div>
-                <div className="absolute mx-auto inset-x-0 bottom-10 text-center">
-                    {charactersLocked && npcsLocked ?
-                        <div>
-                            <button onClick={take_turn}> <PlayIcon className="w-10 h-10 text-primary" /></button>
-                            <h1> It's {whoseTurn}'s turn!</h1>
-                        </div>
-                        : <h1 className="text-primary">Waiting for Initiatives...</h1>}
+                <div className="flex flex-col gap-1">
+                    <div className="flex flex-row w-full justify-between gap-1">
+                        <CharacterListFight title="Characters" characters={players} submit_initiatives={set_player_initiatives}
+                            kill_character={kill_character} rez_character={rez_character} locked={charactersLocked} unlock_fn={() => setCharactersLocked(false)} />
+                        <CharacterListFight title="NPCs" characters={npcs} submit_initiatives={set_npc_initiatives}
+                            kill_character={kill_character} rez_character={rez_character} locked={npcsLocked} unlock_fn={() => setNpcsLocked(false)} />
+                    </div>
+                    <div className="card-raw">
+                        {
+                            (charactersLocked && npcsLocked) ?
+                                (whoseTurn == null) ?
+                                    <div className="flex items-center justify-center gap-20 ">
+                                        <button onClick={new_round}> <ArrowPathIcon className="w-10 h-10 icon-normal" /></button>
+                                        <h1 className='raw-text w-60'> Start a new round!</h1>
+                                    </div>
+                                    :
+                                    <div className="flex items-center justify-center gap-20">
+                                        <button onClick={take_turn}> <PlayIcon className="w-10 h-10 icon-normal" /></button>
+                                        <h1 className='raw-text w-60'> It's {whoseTurn}'s turn!</h1>
+                                    </div>
+                                :
+                                <h1 className="flex items-center justify-center h-10 raw-text-danger ">Waiting for Initiatives...</h1>
+                        }
+                    </div>
                 </div>
             </div>
-
         </main >
     );
 };

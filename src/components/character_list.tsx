@@ -89,7 +89,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
     return (
         <div className='py-1 flex flex-col space-y-2 rounded-md px-6 bg-gray-800'>
             <h1 className='paragraph-heading'>{props.title}</h1>
-            <ul className='ml-8 flex flex-col justify-items-center bg-gray-800 rounded-md border-gray-700  divide-y divide-dotted divide-gray-600'>
+            <ul className='ml-8 flex flex-col justify-items-center card-raw'>
                 {props.characters.map(character => (
                     <li>
                         <div className=' py-1 flex flex-row items-center raw-text'>
