@@ -16,13 +16,13 @@ export const CharacterIcons = (props: CharacterIconsProps) => {
             <h1 className="text-sm w-3">{props.character.initiative}</h1>
             {props.character.isActive ?
                 <button onClick={props.kill_fn}>
-                    <HeartIcon className="w-3 h-3 text-green" /> </button>
+                    <HeartIcon className="w-3 h-3 icon-normal" /> </button>
                 :
                 <button onClick={props.rez_fn}>
-                    <HeartIcon className="w-3 h-3 text-red" />
+                    <HeartIcon className="w-3 h-3 icon-danger" />
                 </button>
             }
-            {props.character.isActive && !props.character.turnAvailable ? <CheckIcon className="w-3 h-3 text-green" /> : <></>}
+            {props.character.isActive && !props.character.turnAvailable ? <CheckIcon className="w-3 h-3 raw-text" /> : <><CheckIcon className="w-3 h-3 text-transparent" /></>}
         </div >
     )
 }
