@@ -52,34 +52,57 @@ impl TurnLengths {
 }
 
 #[derive(Serialize, Default, Deserialize, Debug, Clone)]
-pub struct LairActionTimer {
+pub struct AsyncLairAction {
     pub event_message: String,
-    pub turn_lengths: TurnLengths,
-    turns_until_event: u32,
+    pub turn_length: TurnLengths,
+    absolute_turn_count: u32,
 }
-
-impl LairActionTimer {
-    pub fn new(event_message: String, turn_lengths: TurnLengths) -> Self {
-        LairActionTimer {
+impl AsyncLairAction {
+    pub fn new(
+        event_message: String,
+        turn_length: TurnLengths,
+        turn_counter: &TurnCounter,
+    ) -> Self {
+        let turns_until_event = turn_length.get_turns();
+        AsyncLairAction {
             event_message,
-            turn_lengths,
-            turns_until_event: turn_lengths.get_turns(),
+            turn_length,
+            absolute_turn_count: turn_counter.get() + turns_until_event,
         }
     }
-    pub async fn check(&mut self, turn_counter: &mut TurnCounter) -> Option<String> {
-        if self.turns_until_event == 0 {
-            self.turns_until_event = turn_counter.get();
+    pub async fn check(&mut self, turn_counter: &TurnCounter) -> Option<String> {
+        if turn_counter.get() >= self.absolute_turn_count {
+            self.absolute_turn_count += self.turn_length.get_turns();
             Some(self.event_message.clone())
         } else {
-            self.turns_until_event -= 1;
             None
         }
+    }
+    fn set_absolute_turn_count(&mut self, turn_counter: &TurnCounter) {
+        self.absolute_turn_count = turn_counter.get() + self.turn_length.get_turns();
+    }
+}
+
+#[derive(Serialize, Default, Deserialize, Debug, Clone)]
+pub struct RecurringAsyncLairAction(AsyncLairAction);
+
+impl RecurringAsyncLairAction {
+    pub fn new(event_message: String, turn_length: TurnLengths, counter: &TurnCounter) -> Self {
+        RecurringAsyncLairAction(AsyncLairAction::new(event_message, turn_length, counter))
+    }
+    pub async fn check(&mut self, turn_counter: &mut TurnCounter) -> Option<String> {
+        let message = self.0.check(turn_counter).await;
+        self.0.set_absolute_turn_count(turn_counter);
+        message
     }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct EncounterData {
     pub whose_turn: Option<String>,
+    pub turn_counter: TurnCounter,
+    pub async_lair_actions: Vec<AsyncLairAction>,
+    pub recurring_async_lair_actions: Vec<RecurringAsyncLairAction>,
 }
 
 #[derive(Default)]
