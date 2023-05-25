@@ -12,7 +12,25 @@ interface CharacterListProps {
 }
 
 export const CharacterList = (props: CharacterListProps) => {
-    const [new_character_name, setNewCharacterName] = useState<string>("New Character")
+    const [newCharacterName, setNewCharacterName] = useState<string>("")
+    const [characterNameError, setCharacterNameError] = useState<boolean>(false)
+
+    const submitCharacterName = async () => {
+        console.log(characterNameError)
+        try {
+            if (characterNameError) {
+                return;
+            }
+            await props.add_fn(newCharacterName);
+            setNewCharacterName("");
+        }
+        catch (error) {
+            setCharacterNameError(true);
+            console.log(characterNameError)
+            await new Promise(r => setTimeout(r, 1000));
+            setCharacterNameError(false);
+        }
+    }
 
     return (
         <div className='py-1 flex flex-col space-y-2 px-6 card-raw'>
@@ -28,11 +46,11 @@ export const CharacterList = (props: CharacterListProps) => {
                     </li>
                 ))}
                 <div className="flex flex-row py-1 items-center">
-                    <input className="w-48 input-raw"
-                        type='text' placeholder='New' onChange={(e) => setNewCharacterName(e.target.value)}
+                    <input className={`w-48 ${characterNameError ? 'input-raw-danger animate-spin' : 'input-raw'}`}
+                        type='text' placeholder='New Character' value={newCharacterName} onChange={(e) => setNewCharacterName(e.target.value)}
                     />
-                    <button onClick={() => props.add_fn(new_character_name)}
-                    ><div className="w-11"><PlusIcon className="w-5 h-5 icon-normal" /></div></button>
+                    <button onClick={submitCharacterName}>
+                        <div className="w-11"><PlusIcon className="w-5 h-5 icon-normal" /></div></button>
                 </div>
             </ul>
 

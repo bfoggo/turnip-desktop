@@ -17,12 +17,8 @@ const DashboardPage = () => {
 
 
     const list_players = async () => {
-        try {
-            const message = await invoke('list_players', { campaignId: cid });
-            setPlayers(message as CharacterData[]);
-        } catch (error) {
-            console.error(error);
-        }
+        const message = await invoke('list_players', { campaignId: cid });
+        setPlayers(message as CharacterData[]);
     };
 
     const list_npcs = async () => {
@@ -40,21 +36,14 @@ const DashboardPage = () => {
     }
 
     const add_player = async (name: string) => {
-        try {
-            await invoke('add_player', { campaignId: cid, playerName: name });
-            await list_players();
-        } catch (error) {
-            console.error(error);
-        }
+        await invoke('add_player', { campaignId: cid, playerName: name });
+        await list_players();
     };
 
     const add_npc = async (name: string) => {
-        try {
-            await invoke('add_npc', { campaignId: cid, npcName: name });
-            await list_npcs();
-        } catch (error) {
-            console.error(error);
-        }
+        await invoke('add_npc', { campaignId: cid, npcName: name });
+        await list_npcs();
+
     }
 
     const delete_character = async (character_id: number) => {
