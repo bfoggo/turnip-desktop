@@ -110,7 +110,10 @@ const FightPage = () => {
 
 
     useEffect(() => {
-        new_round().then(list_both).then(() => { }).catch((error) => { console.error(error) });
+        list_both().then(() => { }).catch((error) => { console.error(error) });
+        invoke('get_whose_turn').then((message) => {
+            message !== null ? setWhoseTurn(message as string) : setWhoseTurn(null);
+        }).catch(error => console.error(error));
     }, []);
 
     return (

@@ -1,5 +1,5 @@
 import { PlusIcon, TrashIcon, LockClosedIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CharacterData } from '../types/character'
 import { CharacterIcons } from './character_icons'
 import { init } from 'next/dist/compiled/@vercel/og/satori'
@@ -70,14 +70,23 @@ interface CharacterListFightProps {
 
 export const CharacterListFight = (props: CharacterListFightProps) => {
 
-    const [initiatives, setInitiatives] = useState<Map<number, number>>(new Map<number, number>());
+    const [initiatives, setInitiatives] = useState<Map<number, number | null>>(new Map<number, number | null>());
+
+    useEffect(() => {
+        let new_initiatives = new Map<number, number | null>();
+        for (let character of props.characters) {
+            new_initiatives.set(character.id, character.initiative ? character.initiative : null);
+        }
+        setInitiatives(new_initiatives);
+    }, [props.characters])
+
 
     const set_all_initiatives = async () => {
         try {
             if (check_for_missing_initiatives()) {
                 throw new Error("Initiatives not set for all characters")
             }
-            props.submit_initiatives(initiatives);
+            props.submit_initiatives(initiatives as Map<number, number>);
         }
         catch (error) {
             console.error(error);
@@ -100,7 +109,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
     }
 
     const update_initiative_list = (index: number, new_value: number) => {
-        let new_initiatives = new Map<number, number>(initiatives);
+        let new_initiatives = new Map<number, number | null>(initiatives);
         new_initiatives.set(index, new_value);
         setInitiatives(new_initiatives);
     }
@@ -116,7 +125,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                             {props.locked ?
                                 <CharacterIcons character={character} kill_fn={() => props.kill_character(character.id)} rez_fn={() => props.rez_character(character.id)} />
                                 :
-                                <input type="number" className="w-11 h-5 text-center input-bordered" defaultValue={initiatives.get(character.id) ? initiatives.get(character.id) : ""}
+                                <input type="number" className="w-11 h-5 text-center input-bordered" value={initiatives.get(character.id) ? initiatives.get(character.id) : ""}
                                     onChange={(e) => update_initiative_list(character.id, parseInt(e.target.value))}
                                 />
                             }

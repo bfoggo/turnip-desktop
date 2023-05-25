@@ -1,8 +1,11 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use prisma_client_rust::queries::QueryError;
 use rand::Rng;
-
 use std::vec;
+use tauri::State;
+
+mod encounter;
+use encounter::EncounterState;
 
 #[allow(warnings, unused)]
 mod prisma;
@@ -11,6 +14,7 @@ use prisma::{campaign, character, character_type, PrismaClient};
 
 fn main() {
     tauri::Builder::default()
+        .manage(EncounterState(Default::default()))
         .invoke_handler(tauri::generate_handler![
             upsert_character_type_enum,
             list_campaigns,
@@ -26,6 +30,7 @@ fn main() {
             activate_character,
             deactivate_character,
             take_turn,
+            get_whose_turn,
             reset_round
         ])
         .run(tauri::generate_context!())
@@ -77,12 +82,15 @@ async fn upsert_character_type_enum() -> Result<(), QueryError> {
 type CampaignData = campaign::Data;
 
 #[tauri::command]
-async fn list_campaigns() -> Result<Vec<CampaignData>, QueryError> {
+async fn list_campaigns(
+    encounter_state: State<'_, EncounterState>,
+) -> Result<Vec<CampaignData>, QueryError> {
     let client = PrismaClient::_builder()
         .build()
         .await
         .expect("Failed to construct Prisma Client.");
     let campaigns = client.campaign().find_many(vec![]).exec().await?;
+    encounter_state.0.lock().await.set_current_character(None);
     Ok(campaigns)
 }
 
@@ -286,7 +294,10 @@ async fn deactivate_character(character_id: i32) -> Result<(), QueryError> {
 }
 
 #[tauri::command]
-async fn take_turn(campaign_id: CampaignId) -> Result<Option<String>, QueryError> {
+async fn take_turn(
+    campaign_id: CampaignId,
+    encounter_state: State<'_, EncounterState>,
+) -> Result<Option<String>, QueryError> {
     let client = PrismaClient::_builder()
         .build()
         .await
@@ -307,6 +318,11 @@ async fn take_turn(campaign_id: CampaignId) -> Result<Option<String>, QueryError
         .collect();
     let index = sample_from_sorted_initiatives(&initiatives);
     let character_id = characters[index].id;
+    encounter_state
+        .0
+        .lock()
+        .await
+        .set_current_character(Some(&characters[index].name));
     client
         .character()
         .update(
@@ -316,6 +332,15 @@ async fn take_turn(campaign_id: CampaignId) -> Result<Option<String>, QueryError
         .exec()
         .await?;
     Ok(Some(characters[index].name.clone()))
+}
+
+#[tauri::command]
+async fn get_whose_turn(
+    encounter_state: State<'_, EncounterState>,
+) -> Result<Option<String>, QueryError> {
+    // encounter_state holds and ArcMutex
+    let current_character = encounter_state.0.lock().await.get_current_character();
+    Ok(current_character)
 }
 
 async fn list_all_awaiting_characters(
