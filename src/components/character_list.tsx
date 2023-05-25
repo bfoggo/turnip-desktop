@@ -114,6 +114,13 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
         setInitiatives(new_initiatives);
     }
 
+    const get_initiative_robust = (index: number) => {
+        if (initiatives.get(index) == null) {
+            return undefined;
+        }
+        return initiatives.get(index) as number | undefined;
+    }
+
     return (
         <div className='py-1 flex flex-col space-y-2 rounded-md px-6 bg-gray-800'>
             <h1 className='paragraph-heading'>{props.title}</h1>
@@ -125,7 +132,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
                             {props.locked ?
                                 <CharacterIcons character={character} kill_fn={() => props.kill_character(character.id)} rez_fn={() => props.rez_character(character.id)} />
                                 :
-                                <input type="number" className="w-11 h-5 text-center input-bordered" value={initiatives.get(character.id) ? initiatives.get(character.id) : ""}
+                                <input type="number" className="w-11 h-5 text-center input-bordered" value={get_initiative_robust(character.id) ? get_initiative_robust(character.id) : ""}
                                     onChange={(e) => update_initiative_list(character.id, parseInt(e.target.value))}
                                 />
                             }
