@@ -1,5 +1,8 @@
 use rand::Rng;
 use serde::{Deserialize, Serialize};
+use std::iter::Chain;
+use std::ops::Deref;
+use std::slice::Iter;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
@@ -51,31 +54,27 @@ impl TurnLengths {
     }
 }
 
+trait Check {
+    fn check(&mut self, turn_counter: &mut TurnCounter) -> Option<String>;
+}
+
 #[derive(Serialize, Default, Deserialize, Debug, Clone)]
-pub struct AsyncLairAction {
+pub struct AsyncAction {
     pub event_message: String,
     pub turn_length: TurnLengths,
     absolute_turn_count: u32,
 }
-impl AsyncLairAction {
+impl AsyncAction {
     pub fn new(
         event_message: String,
         turn_length: TurnLengths,
         turn_counter: &TurnCounter,
     ) -> Self {
         let turns_until_event = turn_length.get_turns();
-        AsyncLairAction {
+        AsyncAction {
             event_message,
             turn_length,
             absolute_turn_count: turn_counter.get() + turns_until_event,
-        }
-    }
-    pub async fn check(&mut self, turn_counter: &TurnCounter) -> Option<String> {
-        if turn_counter.get() >= self.absolute_turn_count {
-            self.absolute_turn_count += self.turn_length.get_turns();
-            Some(self.event_message.clone())
-        } else {
-            None
         }
     }
     fn set_absolute_turn_count(&mut self, turn_counter: &TurnCounter) {
@@ -83,16 +82,40 @@ impl AsyncLairAction {
     }
 }
 
-#[derive(Serialize, Default, Deserialize, Debug, Clone)]
-pub struct RecurringAsyncLairAction(AsyncLairAction);
-
-impl RecurringAsyncLairAction {
-    pub fn new(event_message: String, turn_length: TurnLengths, counter: &TurnCounter) -> Self {
-        RecurringAsyncLairAction(AsyncLairAction::new(event_message, turn_length, counter))
+impl Check for AsyncAction {
+    fn check(&mut self, turn_counter: &mut TurnCounter) -> Option<String> {
+        if turn_counter.get() >= self.absolute_turn_count {
+            Some(self.event_message.clone())
+        } else {
+            None
+        }
     }
-    pub async fn check(&mut self, turn_counter: &mut TurnCounter) -> Option<String> {
-        let message = self.0.check(turn_counter).await;
+}
+
+#[derive(Serialize, Default, Deserialize, Debug, Clone)]
+pub struct RecurringAsyncAction(AsyncAction);
+
+impl AsRef<AsyncAction> for RecurringAsyncAction {
+    fn as_ref(&self) -> &AsyncAction {
+        &self.0
+    }
+}
+
+impl RecurringAsyncAction {
+    pub fn new(event_message: String, turn_length: TurnLengths, counter: &TurnCounter) -> Self {
+        RecurringAsyncAction(AsyncAction::new(event_message, turn_length, counter))
+    }
+    fn set_absolute_turn_count(&mut self, turn_counter: &TurnCounter) {
         self.0.set_absolute_turn_count(turn_counter);
+    }
+}
+
+impl Check for RecurringAsyncAction {
+    fn check(&mut self, turn_counter: &mut TurnCounter) -> Option<String> {
+        let message = self.0.check(turn_counter);
+        if message.is_some() {
+            self.set_absolute_turn_count(turn_counter);
+        }
         message
     }
 }
@@ -101,8 +124,8 @@ impl RecurringAsyncLairAction {
 pub struct EncounterData {
     pub whose_turn: Option<String>,
     pub turn_counter: TurnCounter,
-    pub async_lair_actions: Vec<AsyncLairAction>,
-    pub recurring_async_lair_actions: Vec<RecurringAsyncLairAction>,
+    pub async_actions: Vec<AsyncAction>,
+    pub recurring_async_actions: Vec<RecurringAsyncAction>,
 }
 
 #[derive(Default)]
@@ -115,5 +138,31 @@ impl EncounterData {
     }
     pub fn get_current_character(&self) -> Option<String> {
         self.whose_turn.clone()
+    }
+    pub fn add_async_action(&mut self, action: AsyncAction) {
+        self.async_actions.push(action);
+    }
+    pub fn add_recurring_async_action(&mut self, action: RecurringAsyncAction) {
+        self.recurring_async_actions.push(action);
+    }
+    pub fn check_all_async_actions(&mut self) -> Vec<String> {
+        let mut messages: Vec<String> = Vec::new();
+        let mut all_actions: Vec<Box<dyn Check>> = Vec::new();
+        all_actions.extend(
+            self.async_actions
+                .iter()
+                .map(|a| Box::new(a.clone()) as Box<dyn Check>),
+        );
+        all_actions.extend(
+            self.recurring_async_actions
+                .iter()
+                .map(|a| Box::new(a.clone()) as Box<dyn Check>),
+        );
+        for action in all_actions.iter_mut() {
+            if let Some(message) = action.check(&mut self.turn_counter) {
+                messages.push(message);
+            }
+        }
+        messages
     }
 }
