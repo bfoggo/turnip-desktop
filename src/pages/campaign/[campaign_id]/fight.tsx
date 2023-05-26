@@ -18,7 +18,16 @@ const FightPage = () => {
     const [charactersLocked, setCharactersLocked] = useState<boolean>(false);
     const [npcsLocked, setNpcsLocked] = useState<boolean>(false);
     const [whoseTurn, setWhoseTurn] = useState<string | null>(null);
+    const [numTurns, setNumTurns] = useState<number>(0);
 
+    const get_num_turns = async () => {
+        try {
+            const message = await invoke('get_num_turns', { campaignId: cid });
+            setNumTurns(message as number);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const list_players = async () => {
         try {
@@ -91,6 +100,7 @@ const FightPage = () => {
             let messsage = await invoke('take_turn', { campaignId: cid });
             await list_both();
             setWhoseTurn(messsage as string);
+            await get_num_turns();
         }
         catch (error) {
             console.error(error);
@@ -114,6 +124,7 @@ const FightPage = () => {
         invoke('get_whose_turn').then((message) => {
             message !== null ? setWhoseTurn(message as string) : setWhoseTurn(null);
         }).catch(error => console.error(error));
+        get_num_turns().then(() => { }).catch((error) => { console.error(error) });
     }, []);
 
     return (
@@ -145,12 +156,12 @@ const FightPage = () => {
                                 (whoseTurn == null) ?
                                     <div className="flex items-center justify-center gap-20 ">
                                         <button onClick={new_round}> <ArrowPathIcon className="w-10 h-10 icon-normal" /></button>
-                                        <h1 className='raw-text w-60'> Start a new round!</h1>
+                                        <h1 className='raw-text w-80'> Start a new round!</h1>
                                     </div>
                                     :
                                     <div className="flex items-center justify-center gap-20">
                                         <button onClick={take_turn}> <PlayIcon className="w-10 h-10 icon-normal" /></button>
-                                        <h1 className='raw-text w-60'> It's {whoseTurn}'s turn!</h1>
+                                        <h1 className='raw-text w-80'> (turn {numTurns}) : {whoseTurn}'s turn!</h1>
                                     </div>
                                 :
                                 <h1 className="flex items-center justify-center h-10 raw-text-danger ">Waiting for Initiatives...</h1>
@@ -158,6 +169,7 @@ const FightPage = () => {
                     </div>
                 </div>
             </div>
+
         </main >
     );
 };

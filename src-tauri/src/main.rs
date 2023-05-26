@@ -31,7 +31,9 @@ fn main() {
             deactivate_character,
             take_turn,
             get_whose_turn,
-            reset_round
+            get_num_turns,
+            reset_round,
+            resolve
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -318,11 +320,9 @@ async fn take_turn(
         .collect();
     let index = sample_from_sorted_initiatives(&initiatives);
     let character_id = characters[index].id;
-    encounter_state
-        .0
-        .lock()
-        .await
-        .set_current_character(Some(&characters[index].name));
+    let mut encounter_state_lock = encounter_state.0.lock().await;
+    encounter_state_lock.set_current_character(Some(&characters[index].name));
+    encounter_state_lock.tick();
     client
         .character()
         .update(
@@ -341,6 +341,12 @@ async fn get_whose_turn(
     // encounter_state holds and ArcMutex
     let current_character = encounter_state.0.lock().await.get_current_character();
     Ok(current_character)
+}
+
+#[tauri::command]
+async fn get_num_turns(encounter_state: State<'_, EncounterState>) -> Result<u32, QueryError> {
+    let num_turns = encounter_state.0.lock().await.get_num_turns();
+    Ok(num_turns)
 }
 
 async fn list_all_awaiting_characters(
@@ -401,4 +407,31 @@ fn sample_from_sorted_initiatives(sorted_initiatives: &Vec<i32>) -> usize {
         index += 1;
     }
     index
+}
+
+#[tauri::command]
+async fn resolve(
+    campaign_id: CampaignId,
+    encounter_state: State<'_, EncounterState>,
+) -> Result<(), QueryError> {
+    let client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+    client
+        .character()
+        .update_many(
+            vec![
+                character::WhereParam::CampaignId(prisma::read_filters::IntFilter::Equals(
+                    campaign_id.0,
+                )),
+                character::WhereParam::IsActive(prisma::read_filters::BoolFilter::Equals(true)),
+            ],
+            vec![character::SetParam::SetTurnAvailable(true)],
+        )
+        .exec()
+        .await?;
+    let mut encounter_state_lock = encounter_state.0.lock().await;
+    encounter_state_lock.reset_counter();
+    Ok(())
 }

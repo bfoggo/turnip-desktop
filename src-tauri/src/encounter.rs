@@ -10,8 +10,8 @@ use tokio::sync::Mutex;
 pub struct TurnCounter(u32);
 
 impl TurnCounter {
-    pub fn new() -> Self {
-        TurnCounter(0)
+    pub fn reset(&mut self) {
+        self.0 = 0;
     }
     pub fn increment(&mut self) {
         self.0 += 1;
@@ -132,6 +132,15 @@ pub struct EncounterData {
 pub struct EncounterState(pub Arc<Mutex<EncounterData>>);
 
 impl EncounterData {
+    pub fn tick(&mut self) {
+        self.turn_counter.increment();
+    }
+    pub fn reset_counter(&mut self) {
+        self.turn_counter.reset();
+    }
+    pub fn get_num_turns(&self) -> u32 {
+        self.turn_counter.get()
+    }
     pub fn set_current_character(&mut self, name: Option<&str>) {
         let name = name.map(|s| s.to_string());
         self.whose_turn = name;
