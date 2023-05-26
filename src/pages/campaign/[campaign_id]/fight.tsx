@@ -118,6 +118,18 @@ const FightPage = () => {
         }
     }
 
+    const resolve = async () => {
+        try {
+            await invoke('resolve', { campaignId: cid });
+            await list_both();
+            setWhoseTurn('Nobody');
+            get_num_turns();
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
 
     useEffect(() => {
         list_both().then(() => { }).catch((error) => { console.error(error) });
@@ -161,13 +173,15 @@ const FightPage = () => {
                                     :
                                     <div className="flex items-center justify-center gap-20">
                                         <button onClick={take_turn}> <PlayIcon className="w-10 h-10 icon-normal" /></button>
-                                        <h1 className='raw-text w-80'> (turn {numTurns}) : {whoseTurn}'s turn!</h1>
+                                        <h1 className='raw-text w-80'> ({numTurns}) : {whoseTurn}'s turn!</h1>
                                     </div>
                                 :
                                 <h1 className="flex items-center justify-center h-10 raw-text-danger ">Waiting for Initiatives...</h1>
                         }
                     </div>
+                    <button onClick={resolve} className="h-16 btn btn-primary card-raw ">Resolve</button>
                 </div>
+
             </div>
 
         </main >
