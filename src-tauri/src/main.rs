@@ -12,9 +12,16 @@ mod prisma;
 use prisma::{campaign, character, character_type, PrismaClient};
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 
-fn main() {
+#[tokio::main]
+async fn main() {
     tauri::Builder::default()
         .manage(EncounterState(Default::default()))
+        .manage(
+            PrismaClient::_builder()
+                .build()
+                .await
+                .expect("Failed to construct Prisma Client."),
+        )
         .invoke_handler(tauri::generate_handler![
             upsert_character_type_enum,
             list_campaigns,
@@ -46,13 +53,15 @@ enum CharacterType {
 }
 
 #[tauri::command]
-async fn upsert_character_type_enum() -> Result<(), QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    client.character_type().delete_many(vec![]).exec().await?;
-    client
+async fn upsert_character_type_enum(
+    prisma_client: State<'_, PrismaClient>,
+) -> Result<(), QueryError> {
+    prisma_client
+        .character_type()
+        .delete_many(vec![])
+        .exec()
+        .await?;
+    prisma_client
         .character_type()
         .upsert(
             character_type::UniqueWhereParam::IdEquals(CharacterType::Player as i32),
@@ -66,7 +75,7 @@ async fn upsert_character_type_enum() -> Result<(), QueryError> {
         )
         .exec()
         .await?;
-    client
+    prisma_client
         .character_type()
         .upsert(
             character_type::UniqueWhereParam::IdEquals(CharacterType::NPC as i32),
@@ -86,23 +95,19 @@ type CampaignData = campaign::Data;
 #[tauri::command]
 async fn list_campaigns(
     encounter_state: State<'_, EncounterState>,
+    prisma_client: State<'_, PrismaClient>,
 ) -> Result<Vec<CampaignData>, QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    let campaigns = client.campaign().find_many(vec![]).exec().await?;
+    let campaigns = prisma_client.campaign().find_many(vec![]).exec().await?;
     encounter_state.0.lock().await.set_current_character(None);
     Ok(campaigns)
 }
 
 #[tauri::command]
-async fn add_campaign(campaign_name: String) -> Result<(), QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    client
+async fn add_campaign(
+    campaign_name: String,
+    prisma_client: State<'_, PrismaClient>,
+) -> Result<(), QueryError> {
+    prisma_client
         .campaign()
         .create(campaign_name, vec![])
         .exec()
@@ -111,12 +116,11 @@ async fn add_campaign(campaign_name: String) -> Result<(), QueryError> {
 }
 
 #[tauri::command]
-async fn delete_campaign(campaign_name: String) -> Result<(), QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    client
+async fn delete_campaign(
+    campaign_name: String,
+    prisma_client: State<'_, PrismaClient>,
+) -> Result<(), QueryError> {
+    prisma_client
         .campaign()
         .delete(campaign::UniqueWhereParam::NameEquals(campaign_name))
         .exec()
@@ -130,12 +134,11 @@ struct CampaignId(i32);
 type CharacterData = character::Data;
 
 #[tauri::command]
-async fn list_players(campaign_id: CampaignId) -> Result<Vec<CharacterData>, QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    let players = client
+async fn list_players(
+    campaign_id: CampaignId,
+    prisma_client: State<'_, PrismaClient>,
+) -> Result<Vec<CharacterData>, QueryError> {
+    let players = prisma_client
         .character()
         .find_many(vec![
             character::WhereParam::CampaignId(prisma::read_filters::IntFilter::Equals(
@@ -151,12 +154,11 @@ async fn list_players(campaign_id: CampaignId) -> Result<Vec<CharacterData>, Que
 }
 
 #[tauri::command]
-async fn list_npcs(campaign_id: CampaignId) -> Result<Vec<CharacterData>, QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    let npcs = client
+async fn list_npcs(
+    campaign_id: CampaignId,
+    prisma_client: State<'_, PrismaClient>,
+) -> Result<Vec<CharacterData>, QueryError> {
+    let npcs = prisma_client
         .character()
         .find_many(vec![
             character::WhereParam::CampaignId(prisma::read_filters::IntFilter::Equals(
@@ -172,12 +174,12 @@ async fn list_npcs(campaign_id: CampaignId) -> Result<Vec<CharacterData>, QueryE
 }
 
 #[tauri::command]
-async fn add_player(campaign_id: CampaignId, player_name: String) -> Result<(), QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    client
+async fn add_player(
+    campaign_id: CampaignId,
+    player_name: String,
+    prisma_client: State<'_, PrismaClient>,
+) -> Result<(), QueryError> {
+    prisma_client
         .character()
         .create(
             player_name,
@@ -193,12 +195,12 @@ async fn add_player(campaign_id: CampaignId, player_name: String) -> Result<(), 
 }
 
 #[tauri::command]
-async fn add_npc(campaign_id: CampaignId, npc_name: String) -> Result<(), QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    client
+async fn add_npc(
+    campaign_id: CampaignId,
+    npc_name: String,
+    prisma_client: State<'_, PrismaClient>,
+) -> Result<(), QueryError> {
+    prisma_client
         .character()
         .create(
             npc_name,
@@ -214,12 +216,11 @@ async fn add_npc(campaign_id: CampaignId, npc_name: String) -> Result<(), QueryE
 }
 
 #[tauri::command]
-async fn delete_character(character_id: i32) -> Result<(), QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    client
+async fn delete_character(
+    character_id: i32,
+    prisma_client: State<'_, PrismaClient>,
+) -> Result<(), QueryError> {
+    prisma_client
         .character()
         .delete(character::UniqueWhereParam::IdEquals(character_id))
         .exec()
@@ -228,12 +229,12 @@ async fn delete_character(character_id: i32) -> Result<(), QueryError> {
 }
 
 #[tauri::command]
-async fn set_initiative(character_id: i32, initiative: i32) -> Result<(), QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    client
+async fn set_initiative(
+    character_id: i32,
+    initiative: i32,
+    prisma_client: State<'_, PrismaClient>,
+) -> Result<(), QueryError> {
+    prisma_client
         .character()
         .update(
             character::UniqueWhereParam::IdEquals(character_id),
@@ -245,12 +246,11 @@ async fn set_initiative(character_id: i32, initiative: i32) -> Result<(), QueryE
 }
 
 #[tauri::command]
-async fn get_character_data(character_id: i32) -> Result<CharacterData, QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    let character = client
+async fn get_character_data(
+    character_id: i32,
+    prisma_client: State<'_, PrismaClient>,
+) -> Result<CharacterData, QueryError> {
+    let character = prisma_client
         .character()
         .find_unique(character::UniqueWhereParam::IdEquals(character_id))
         .exec()
@@ -260,13 +260,11 @@ async fn get_character_data(character_id: i32) -> Result<CharacterData, QueryErr
 }
 
 #[tauri::command]
-async fn activate_character(character_id: i32) -> Result<(), QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-
-    client
+async fn activate_character(
+    character_id: i32,
+    prisma_client: State<'_, PrismaClient>,
+) -> Result<(), QueryError> {
+    prisma_client
         .character()
         .update(
             character::UniqueWhereParam::IdEquals(character_id),
@@ -278,13 +276,11 @@ async fn activate_character(character_id: i32) -> Result<(), QueryError> {
 }
 
 #[tauri::command]
-async fn deactivate_character(character_id: i32) -> Result<(), QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-
-    client
+async fn deactivate_character(
+    character_id: i32,
+    prisma_client: State<'_, PrismaClient>,
+) -> Result<(), QueryError> {
+    prisma_client
         .character()
         .update(
             character::UniqueWhereParam::IdEquals(character_id),
@@ -299,11 +295,8 @@ async fn deactivate_character(character_id: i32) -> Result<(), QueryError> {
 async fn take_turn(
     campaign_id: CampaignId,
     encounter_state: State<'_, EncounterState>,
+    prisma_client: State<'_, PrismaClient>,
 ) -> Result<Option<String>, QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
     let mut characters = list_all_awaiting_characters(campaign_id).await?;
     if characters.is_empty() {
         return Ok(None);
@@ -323,7 +316,7 @@ async fn take_turn(
     let mut encounter_state_lock = encounter_state.0.lock().await;
     encounter_state_lock.set_current_character(Some(&characters[index].name));
     encounter_state_lock.tick();
-    client
+    prisma_client
         .character()
         .update(
             character::UniqueWhereParam::IdEquals(character_id),
@@ -351,12 +344,9 @@ async fn get_num_turns(encounter_state: State<'_, EncounterState>) -> Result<u32
 
 async fn list_all_awaiting_characters(
     campaign_id: CampaignId,
+    prisma_client: State<'_, PrismaClient>,
 ) -> Result<Vec<CharacterData>, QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    let characters = client
+    let characters = prisma_client
         .character()
         .find_many(vec![
             character::WhereParam::CampaignId(prisma::read_filters::IntFilter::Equals(
@@ -371,13 +361,12 @@ async fn list_all_awaiting_characters(
 }
 
 #[tauri::command]
-async fn reset_round(campaign_id: CampaignId) -> Result<(), QueryError> {
+async fn reset_round(
+    campaign_id: CampaignId,
+    prisma_client: State<'_, PrismaClient>,
+) -> Result<(), QueryError> {
     // set all characters to have turn available
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    client
+    prisma_client
         .character()
         .update_many(
             vec![
@@ -413,12 +402,9 @@ fn sample_from_sorted_initiatives(sorted_initiatives: &Vec<i32>) -> usize {
 async fn resolve(
     campaign_id: CampaignId,
     encounter_state: State<'_, EncounterState>,
+    prisma_client: State<'_, PrismaClient>,
 ) -> Result<(), QueryError> {
-    let client = PrismaClient::_builder()
-        .build()
-        .await
-        .expect("Failed to construct Prisma Client.");
-    client
+    prisma_client
         .character()
         .update_many(
             vec![
