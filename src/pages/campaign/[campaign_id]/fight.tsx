@@ -162,24 +162,25 @@ const FightPage = () => {
                         <CharacterListFight title="NPCs" characters={npcs} submit_initiatives={set_npc_initiatives}
                             kill_character={kill_character} rez_character={rez_character} locked={npcsLocked} unlock_fn={() => setNpcsLocked(false)} />
                     </div>
-                    <div className="card-raw">
+                    <div className="flex flex-row card-undivided items-center">
+                        <button onClick={resolve} className="h-10 w-18 pt-1 pl-5 btn btn-primary card-raw ">Resolve</button>
                         {
                             (charactersLocked && npcsLocked) ?
                                 (whoseTurn == null) ?
-                                    <div className="flex items-center justify-center gap-20 ">
-                                        <button onClick={new_round}> <ArrowPathIcon className="w-10 h-10 icon-normal" /></button>
-                                        <h1 className='raw-text w-80'> Start a new round!</h1>
+                                    <div className="flex items-center">
+                                        <button onClick={new_round}> <ArrowPathIcon className=" pl-2 w-10 h-8 icon-normal" /></button>
+                                        <h1 className='ml-48 pl-2 raw-text w-80'> Start a new round!</h1>
                                     </div>
                                     :
-                                    <div className="flex items-center justify-center gap-20">
-                                        <button onClick={take_turn}> <PlayIcon className="w-10 h-10 icon-normal" /></button>
-                                        <h1 className='raw-text w-80'> ({numTurns}) : {whoseTurn}'s turn!</h1>
+                                    <div className="flex items-center">
+                                        <button onClick={take_turn}> <PlayIcon className="pl-2 w-10 h-8 icon-normal" /></button>
+                                        <h1 className='ml-48 raw-text w-80'> ({numTurns}) : {whoseTurn}'s turn!</h1>
                                     </div>
                                 :
-                                <h1 className="flex items-center justify-center h-10 raw-text-danger ">Waiting for Initiatives...</h1>
+                                <h1 className="flex ml-60 items-center justify-center h-10 raw-text-danger ">Waiting for Initiatives...</h1>
                         }
                     </div>
-                    <button onClick={resolve} className="h-16 btn btn-primary card-raw ">Resolve</button>
+
                 </div>
 
             </div>
