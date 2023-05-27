@@ -297,7 +297,7 @@ async fn take_turn(
     encounter_state: State<'_, EncounterState>,
     prisma_client: State<'_, PrismaClient>,
 ) -> Result<Option<String>, QueryError> {
-    let mut characters = list_all_awaiting_characters(campaign_id).await?;
+    let mut characters = list_all_awaiting_characters(campaign_id, &prisma_client).await?;
     if characters.is_empty() {
         return Ok(None);
     }
@@ -344,7 +344,7 @@ async fn get_num_turns(encounter_state: State<'_, EncounterState>) -> Result<u32
 
 async fn list_all_awaiting_characters(
     campaign_id: CampaignId,
-    prisma_client: State<'_, PrismaClient>,
+    prisma_client: &PrismaClient,
 ) -> Result<Vec<CharacterData>, QueryError> {
     let characters = prisma_client
         .character()
