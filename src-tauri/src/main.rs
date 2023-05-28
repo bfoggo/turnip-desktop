@@ -14,16 +14,17 @@ use prisma::{campaign, character, character_type, PrismaClient};
 
 #[tokio::main]
 async fn main() {
+    let prisma_client = PrismaClient::_builder()
+        .build()
+        .await
+        .expect("Failed to construct Prisma Client.");
+    upsert_character_type_enum(&prisma_client)
+        .await
+        .expect("Failed to upsert character type enum.");
     tauri::Builder::default()
         .manage(EncounterState(Default::default()))
-        .manage(
-            PrismaClient::_builder()
-                .build()
-                .await
-                .expect("Failed to construct Prisma Client."),
-        )
+        .manage(prisma_client)
         .invoke_handler(tauri::generate_handler![
-            upsert_character_type_enum,
             list_campaigns,
             add_campaign,
             delete_campaign,
@@ -53,10 +54,7 @@ enum CharacterType {
     NPC,
 }
 
-#[tauri::command]
-async fn upsert_character_type_enum(
-    prisma_client: State<'_, PrismaClient>,
-) -> Result<(), QueryError> {
+async fn upsert_character_type_enum(prisma_client: &PrismaClient) -> Result<(), QueryError> {
     prisma_client
         .character_type()
         .delete_many(vec![])
