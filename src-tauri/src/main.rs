@@ -40,7 +40,8 @@ async fn main() {
             get_whose_turn,
             get_num_turns,
             reset_round,
-            resolve
+            resolve,
+            add_async_action
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -419,5 +420,16 @@ async fn resolve(
         .await?;
     let mut encounter_state_lock = encounter_state.0.lock().await;
     encounter_state_lock.reset_counter();
+    Ok(())
+}
+
+#[tauri::command]
+async fn add_async_action(
+    message: String,
+    turn_length_int: u32,
+    encounter_state: State<'_, EncounterState>,
+) -> Result<(), QueryError> {
+    let mut encounter_state_lock = encounter_state.0.lock().await;
+    encounter_state_lock.add_async_action(message, turn_length_int);
     Ok(())
 }

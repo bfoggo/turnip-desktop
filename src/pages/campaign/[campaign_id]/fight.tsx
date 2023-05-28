@@ -7,6 +7,7 @@ import { Sidebar } from '@/components/sidebar';
 import { CharacterListFight } from '@/components/character_list';
 import { CharacterData } from '../../../types/character';
 import { PlayIcon, ArrowPathIcon } from '@heroicons/react/24/solid';
+import { EventSheet } from '../../../components/event_sheet'
 
 const FightPage = () => {
     const router = useRouter();
@@ -180,11 +181,8 @@ const FightPage = () => {
                                 <h1 className="flex ml-60 items-center justify-center h-10 raw-text-danger ">Waiting for Initiatives...</h1>
                         }
                     </div>
-
                 </div>
-
             </div>
-
         </main >
     );
 };

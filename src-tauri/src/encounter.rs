@@ -54,6 +54,17 @@ impl TurnLengths {
     }
 }
 
+impl From<u32> for TurnLengths {
+    fn from(i: u32) -> Self {
+        match i {
+            0 => TurnLengths::Short,
+            1 => TurnLengths::Medium,
+            2 => TurnLengths::Long,
+            _ => TurnLengths::Medium,
+        }
+    }
+}
+
 trait Check {
     fn check(&mut self, turn_counter: &mut TurnCounter) -> Option<String>;
 }
@@ -148,7 +159,12 @@ impl EncounterData {
     pub fn get_current_character(&self) -> Option<String> {
         self.whose_turn.clone()
     }
-    pub fn add_async_action(&mut self, action: AsyncAction) {
+    pub fn add_async_action(&mut self, message: String, turn_length_int: u32) {
+        let action = AsyncAction::new(
+            message,
+            TurnLengths::from(turn_length_int),
+            &self.turn_counter,
+        );
         self.async_actions.push(action);
     }
     pub fn add_recurring_async_action(&mut self, action: RecurringAsyncAction) {
