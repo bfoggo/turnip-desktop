@@ -64,7 +64,7 @@ export default function Home() {
         <div className="pt-2 flex flex-col justify-start w-full">
           <li className="flex flex-col space-y-4 pb-3">
             {campaigns.map((campaign) => (
-              <div className="flex flex-row space-x-2 w-3/4">
+              <div key={campaign.id} className="flex flex-row space-x-2 w-3/4">
                 <Link className="w-full" href={{
                   pathname: '/campaign/[campaign_id]/dashboard', query: {
                     campaign_name: campaign.name,

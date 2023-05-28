@@ -57,7 +57,7 @@ const DashboardPage = () => {
 
     useEffect(() => {
         list_both().then(() => { }).catch((error) => { console.error(error) });
-    }, []);
+    });
 
     return (
         <main

@@ -138,7 +138,7 @@ const FightPage = () => {
             message !== null ? setWhoseTurn(message as string) : setWhoseTurn(null);
         }).catch(error => console.error(error));
         get_num_turns().then(() => { }).catch((error) => { console.error(error) });
-    }, []);
+    }, [get_num_turns, list_both]);
 
     return (
         <main
@@ -175,7 +175,7 @@ const FightPage = () => {
                                     :
                                     <div className="flex items-center">
                                         <button onClick={take_turn}> <PlayIcon className="pl-2 w-10 h-8 icon-normal" /></button>
-                                        <h1 className='ml-48 raw-text w-80'> ({numTurns}) : {whoseTurn}'s turn!</h1>
+                                        <h1 className='ml-48 raw-text w-80'> ({numTurns}) : {whoseTurn}`&#39`s turn!</h1>
                                     </div>
                                 :
                                 <h1 className="flex ml-60 items-center justify-center h-10 raw-text-danger ">Waiting for Initiatives...</h1>

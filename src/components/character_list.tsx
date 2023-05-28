@@ -37,8 +37,8 @@ export const CharacterList = (props: CharacterListProps) => {
             <h1 className='paragraph-heading'>{props.title}</h1>
             <ul className='ml-8 flex flex-col justify-items-center bg-gray-800 rounded-md border-gray-700  divide-y divide-dotted divide-gray-600'>
                 {props.characters.map((character) => (
-                    <li>
-                        <div className='py-1 flex flex-row items-center raw-text '>
+                    <li key={character.id}>
+                        <div key={character.id} className='py-1 flex flex-row items-center raw-text '>
                             <p className="w-48">{character.name}</p>
                             <button onClick={() => props.delete_fn(character.id)}><div className="w-11">
                                 <TrashIcon className="h-4 w-4 icon-danger" /></div></button>
@@ -126,7 +126,7 @@ export const CharacterListFight = (props: CharacterListFightProps) => {
             <h1 className='paragraph-heading'>{props.title}</h1>
             <ul className='ml-8 flex flex-col justify-items-center card-raw'>
                 {props.characters.map(character => (
-                    <li>
+                    <li key={character.id}>
                         <div className=' py-1 flex flex-row items-center raw-text'>
                             <p className="w-48">{character.name}</p>
                             {props.locked ?

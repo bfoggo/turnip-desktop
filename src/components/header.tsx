@@ -21,7 +21,7 @@ export const Header = (props: BreadCrumbProps) => {
                     </Link> 
                     {
                         props.crumbs.map((crumb) => (
-                            <div className="flex flex-row items-center ">
+                            <div key={crumb.name} className="flex flex-row items-center ">
                                 <h1 className='w-4 h-4 header-text'><ChevronRightIcon /></h1>
                                 <Link href={crumb.href} >
                                     <h1 className='header-text'>{crumb.name}</h1>
