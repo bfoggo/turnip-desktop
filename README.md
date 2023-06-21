@@ -1,8 +1,7 @@
 # Turnip (Turn Initiative Processor)
+A [Tauri App](https://tauri.app/) for manging campaigns and turns in tabletop games. Instead of using a fixed order of turns in an encounter, Turnip will rnadomly select a turn order based on the initiative
 
-Turnip is a [Tauri App](https://tauri.app/) for manging campaigns and turns in tabletop games. Instead of using a fixed order of turns in an encounter, Turnip will rnadomly select a turn order based on the initiative
-
-# [Todo]
+## [Todo]
 
 * Asyncronous action system
 * Automated weather
